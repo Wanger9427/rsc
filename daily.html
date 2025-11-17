@@ -5,70 +5,18 @@
   <title>【袁成】老A日常系列</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: "Microsoft YaHei", sans-serif;
-      background-color: #fdfdfd;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      text-align: center;
-      padding: 30px 20px;
-      background-color: #1a73e8;
-      color: #fff;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 26px;
-    }
-
-    main {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 0 20px;
-    }
-
-    #chapterList {
-      list-style: none;
-      padding-left: 0;
-      margin-bottom: 30px;
-    }
-
-    #chapterList li {
-      margin-bottom: 12px;
-    }
-
-    #chapterList a {
-      text-decoration: none;
-      color: #1a73e8;
-      font-weight: bold;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    #chapterList a:hover {
-      text-decoration: underline;
-    }
-
-    #content {
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background-color: #f5f5f5;
-      min-height: 200px;
-    }
-
-    #content p {
-      margin-bottom: 16px;
-    }
-
-    @media (max-width: 500px) {
-      #chapterList a {
-        font-size: 16px;
-      }
-    }
+    body { font-family:"Microsoft YaHei",sans-serif; background:#fdfdfd; color:#333; margin:0; padding:0; }
+    header { text-align:center; padding:30px 20px; background:#1a73e8; color:#fff; }
+    header h1 { margin:0; font-size:26px; }
+    main { max-width:800px; margin:20px auto; padding:0 20px; }
+    #chapterList { list-style:none; padding-left:0; margin-bottom:20px; }
+    #chapterList li { margin-bottom:10px; }
+    #chapterList a { text-decoration:none; color:#1a73e8; font-weight:bold; cursor:pointer; }
+    #chapterList a:hover { text-decoration:underline; }
+    #pagination { text-align:center; margin-top:15px; }
+    #pagination button { margin:0 3px; padding:5px 10px; cursor:pointer; }
+    #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
+    #content p { margin-bottom:16px; }
   </style>
 </head>
 <body>
@@ -79,39 +27,85 @@
 </header>
 
 <main>
-  <ul id="chapterList">
-    <!-- 在这里添加章节标题 -->
-    <!-- 格式：<li><a data-file="对应txt文件名">标题</a></li> -->
-    <li><a data-file="Dogs, Humans, Heat, and Public Order(1).txt">狗、人、发情与公共秩序（上）</a></li>
-    <li><a data-file="Dogs, Humans, Heat, and Public Order(2).txt">狗、人、发情与公共秩序（上）</a></li>
-    <!-- 后续文档可继续添加 -->
-  </ul>
-
+  <ul id="chapterList"></ul>
+  <div id="pagination"></div>
   <div id="content">请选择标题开始阅读</div>
 </main>
 
 <script>
-  const links = document.querySelectorAll('#chapterList a');
-  const contentDiv = document.getElementById('content');
+const chapters = [
+  {title:"狗、人、发情与公共秩序（上）", file:"Dogs, Humans, Heat, and Public Order(1)"},
+  {title:"狗、人、发情与公共秩序（下）", file:"Dogs, Humans, Heat, and Public Order(2)"},
+  // …假设有 30 多篇，可以继续添加
+];
 
-  links.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const file = link.getAttribute('data-file');
+const PAGE_SIZE = 10; // 每页显示 10 篇文章
+let currentPage = 0;
+const chapterList = document.getElementById('chapterList');
+const paginationDiv = document.getElementById('pagination');
+const contentDiv = document.getElementById('content');
+let currentChapterIndex = 0;
 
-      fetch(file)
-        .then(response => response.text())
-        .then(text => {
-          const paragraphs = text.split('\n').filter(line => line.trim() !== '');
-          contentDiv.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
-          // 滚动到内容顶部
-          window.scrollTo({ top: contentDiv.offsetTop - 20, behavior: 'smooth' });
-        })
-        .catch(err => {
-          contentDiv.innerHTML = '加载失败：' + err;
-        });
-    });
-  });
+// 渲染章节列表
+function renderChapterList(){
+  chapterList.innerHTML = "";
+  const start = currentPage * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, chapters.length);
+  for(let i=start; i<end; i++){
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.textContent = chapters[i].title;
+    a.setAttribute('data-file', chapters[i].file);
+    a.addEventListener('click',()=>{loadChapter(i);});
+    li.appendChild(a);
+    chapterList.appendChild(li);
+  }
+  renderPagination();
+}
+
+// 渲染分页按钮
+function renderPagination(){
+  paginationDiv.innerHTML = "";
+  const totalPages = Math.ceil(chapters.length / PAGE_SIZE);
+  for(let i=0;i<totalPages;i++){
+    const btn = document.createElement('button');
+    btn.textContent = i+1;
+    if(i===currentPage) btn.disabled = true;
+    btn.addEventListener('click',()=>{currentPage=i; renderChapterList();});
+    paginationDiv.appendChild(btn);
+  }
+}
+
+// 加载文章内容
+function loadChapter(index){
+  const file = chapters[index].file;
+  currentChapterIndex = index;
+  fetch(file)
+    .then(res=>res.text())
+    .then(text=>{
+      const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
+      contentDiv.innerHTML = paragraphs.map(p=>`<p>${p}</p>`).join('') + renderNavButtons();
+      window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
+    })
+    .catch(err=>contentDiv.innerHTML = '加载失败：'+err);
+}
+
+// 渲染“上一篇 / 返回目录 / 下一篇”
+function renderNavButtons(){
+  const prevIndex = currentChapterIndex>0 ? currentChapterIndex-1 : null;
+  const nextIndex = currentChapterIndex<chapters.length-1 ? currentChapterIndex+1 : null;
+
+  return `
+    <div style="margin-top:15px; text-align:center;">
+      ${prevIndex!==null? `<button onclick="loadChapter(${prevIndex})">上一篇</button>` : ''}
+      <button onclick="contentDiv.innerHTML='请选择标题开始阅读'; window.scrollTo({top:0, behavior:'smooth'});">返回目录</button>
+      ${nextIndex!==null? `<button onclick="loadChapter(${nextIndex})">下一篇</button>` : ''}
+    </div>
+  `;
+}
+
+// 初始化
+renderChapterList();
 </script>
 
 </body>
