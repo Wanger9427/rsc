@@ -76,42 +76,111 @@
   <p>点击下方分区进入对应系列</p>
 </header>
 
-<main>
-  <div class="section-card">
-    <h2>【袁成】重逢</h2>
-    <p>成才没有加入老A的故事线<br>全18章+3篇番外</p>
-    <a href="reunion.html">进入分区</a>
-  </div>
+<main style="
+    display: flex; /* 启用弹性布局 */
+    flex-wrap: wrap; /* 允许卡片换行 */
+    gap: 20px; /* 卡片之间的间距 */
+    padding: 20px;
+    max-width: 1200px; /* 限制整个内容区域的最大宽度 */
+    margin: 0 auto; /* 使整个内容区域在PC端居中 */
+">
+    <style>
+        .section-card {
+            /* 基础样式 */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            
+            /* 宽度控制：在 PC 端，卡片宽度适应父容器，同时限制最小最大宽度 */
+            flex-grow: 1; /* 允许卡片伸展 */
+            flex-basis: 280px; /* 理想基础宽度，当宽度足够时每行显示多个 */
+            max-width: 350px; /* 限制单张卡片最大宽度，防止文字被过度拉伸 */
+            
+            /* 高度控制：通过 padding 控制高度，同时满足移动端降低高度的要求 */
+            padding: 15px; /* 移动端/小屏幕时的内边距，比默认值小 */
+            
+            /* 内部内容样式 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* 标题和文字样式 */
+        .section-card h2 {
+            font-size: 18px;
+            margin-top: 0;
+            color: #333;
+        }
+        .section-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            /* 保证内容不会因文字太长而溢出 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* 链接按钮样式 */
+        .section-card a {
+            display: inline-block;
+            background-color: #007bff; /* 蓝色按钮 */
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: auto; /* 将按钮推到底部 */
+        }
+        
+        /* 鼠标悬停效果 */
+        .section-card:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
 
-  <div class="section-card">
-    <h2>【袁成】短篇文</h2>
-    <p>短篇都是相互独立的<br>时间线和各自设定都很混乱。</p>
-    <a href="shorts.html">进入分区</a>
-  </div>
-  
-  <div class="section-card">
-    <h2>【袁成】老A日常系列</h2>
-    <p>成才、许三多、吴哲、齐桓四人一个宿舍的背景<br>内容偏全员沙雕。</p>
-    <a href="daily.html">进入分区</a>
-  </div>
+        /* 专门针对交流模块没有链接的情况 */
+        .section-card.no-link p {
+             margin-bottom: 0; /* 如果是最后一个没有链接的卡片，底部间距可以移除 */
+        }
+    </style>
 
-  <div class="section-card">
-    <h2>【袁成】老A版《走近科学》</h2>
-    <p>沙雕灵异的科学事件</p>
-    <a href="science.html">进入分区</a>
-  </div>
+    <div class="section-card">
+        <h2>【袁成】重逢</h2>
+        <p>成才没有加入老A的故事线<br>全18章+3篇番外</p>
+        <a href="reunion.html">进入分区</a>
+    </div>
 
-  <div class="section-card">
-    <h2>非袁成等杂文</h2>
-    <p>包括其他CP和多CP等</p>
-    <a href="other.html">进入分区</a>
-  </div>
-  
-  <div class="section-card">
-    <h2>与我交流</h2>
-    <p>QQ群：870206692<br>(加群请写备注)</p>
-  </div>
-  
+    <div class="section-card">
+        <h2>【袁成】短篇文</h2>
+        <p>短篇都是相互独立的<br>时间线和各自设定都很混乱。</p>
+        <a href="shorts.html">进入分区</a>
+    </div>
+    
+    <div class="section-card">
+        <h2>【袁成】老A日常系列</h2>
+        <p>成才、许三多、吴哲、齐桓四人一个宿舍的背景<br>内容偏全员沙雕。</p>
+        <a href="daily.html">进入分区</a>
+    </div>
+
+    <div class="section-card">
+        <h2>【袁成】老A版《走近科学》</h2>
+        <p>沙雕灵异的科学事件</p>
+        <a href="science.html">进入分区</a>
+    </div>
+
+    <div class="section-card">
+        <h2>非袁成等杂文</h2>
+        <p>包括其他CP和多CP等</p>
+        <a href="other.html">进入分区</a>
+    </div>
+    
+    <div class="section-card no-link">
+        <h2>与我交流</h2>
+        <p>QQ群：870206692<br>(加群请写备注)</p>
+    </div>
 </main>
 
 </body>
