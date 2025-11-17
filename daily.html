@@ -195,9 +195,9 @@ function renderChapterList(){
     a.textContent = chapters[i].title;
     a.addEventListener('click', () => { loadChapter(i); });
     
-    // 2. 检查是否已读并设置灰色
+    // 2. 检查是否已读并设置黑色
     if (readChapters.has(i)) {
-        a.style.color = '#474747'; // 已读标题为灰色
+        a.style.color = '#000000'; // 已读标题为黑色
         a.style.fontWeight = 'normal'; 
     } else {
         a.style.color = '#337ab7'; // 未读标题颜色（蓝色）
