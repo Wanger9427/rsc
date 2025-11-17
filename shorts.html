@@ -97,7 +97,7 @@
           
             <a href="daily.html" class="nav-btn" style="
                 color: #fff;
-                background: #DEC0EB; /* 浅紫 */
+                background: #B4A2BA; /* 浅紫 */
                 box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             ">老A日常系列</a>
           
@@ -200,13 +200,9 @@ function renderChapterList(){
 
   // 限制级提示函数
 
-/**
- * 弹出限制级内容警告，并返回一个 Promise。
- * 用户点击“确认”则 resolve，点击“取消”则 reject。
- */
 function showRestrictedWarning() {
     return new Promise((resolve, reject) => {
-        const message = "警告：此章节可能包含限制级内容，不适合所有读者。您确定要继续阅读吗？";
+        const message = "注意：此章节包含【限制级】内容，请确认您已年满18岁。";
         // 使用 confirm 弹出原生弹窗
         if (window.confirm(message)) {
             resolve(); // 用户点击“确认”
