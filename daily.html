@@ -4,20 +4,28 @@
   <meta charset="UTF-8">
   <title>【袁成】老A日常系列</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family:"Microsoft YaHei",sans-serif; background:#fdfdfd; color:#333; margin:0; padding:0; }
-    header { text-align:center; padding:30px 20px; background:#1a73e8; color:#fff; }
-    header h1 { margin:0; font-size:26px; }
-    main { max-width:800px; margin:20px auto; padding:0 20px; }
-    #chapterList { list-style:none; padding-left:0; margin-bottom:20px; }
-    #chapterList li { margin-bottom:10px; }
-    #chapterList a { text-decoration:none; color:#1a73e8; font-weight:bold; cursor:pointer; }
-    #chapterList a:hover { text-decoration:underline; }
-    #pagination { text-align:center; margin-top:15px; }
-    #pagination button { margin:0 3px; padding:5px 10px; cursor:pointer; }
-    #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
-    #content p { margin-bottom:16px; }
-  </style>
+<style>
+  body { font-family:"Microsoft YaHei",sans-serif; background:#fdfdfd; color:#333; margin:0; padding:0; }
+  header { text-align:center; padding:30px 20px; background:#1a73e8; color:#fff; }
+  header h1 { margin:0; font-size:26px; }
+  main { max-width:800px; margin:20px auto; padding:0 20px; }
+  /* ===章节列表=== */
+  #chapterList { list-style:none; padding-left:0; margin-bottom:20px; }
+  /* 每一行 */
+  .chapter-item {display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  /* 标题 */
+  .chapter-title {text-decoration:none; color:#1a73e8; font-weight:bold; cursor:pointer;}
+  .chapter-title:hover {text-decoration:underline;}
+  /* 简介 */
+  .chapter-desc {font-size:14px;color:#888;margin-left:20px;white-space:nowrap;}
+  /* 分页 */
+  #pagination { text-align:center; margin-top:15px; }
+  #pagination button { margin:0 3px; padding:5px 10px; cursor:pointer; }
+  /* 内容框 */
+  #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
+  #content p {margin-bottom:16px; }
+</style>
+
 </head>
 <body>
 
@@ -66,25 +74,23 @@ function renderChapterList(){
   chapterList.innerHTML = "";
   const start = currentPage * PAGE_SIZE;
   const end = Math.min(start + PAGE_SIZE, chapters.length);
-
   for(let i=start; i<end; i++){
     const chap = chapters[i];
     const li = document.createElement('li');
-    // 文章标题
+    li.className = "chapter-item";
+    // 标题
     const a = document.createElement('a');
     a.textContent = chap.title;
+    a.className = "chapter-title";
     a.setAttribute('data-file', chap.file);
-    a.addEventListener('click',()=>{loadChapter(i);});
-    li.appendChild(a);
+    a.addEventListener('click', ()=>{loadChapter(i);});
     // 简介
-    if(chap.desc){
-      const desc = document.createElement('div');
-      desc.textContent = chap.desc;
-      desc.style.fontSize = "14px";
-      desc.style.color = "#666";
-      desc.style.marginLeft = "10px";
-      li.appendChild(desc);
-    }
+    const desc = document.createElement('span');
+    desc.className = "chapter-desc";
+    desc.textContent = chap.desc || "";
+    // 添加到 li
+    li.appendChild(a);
+    li.appendChild(desc);
     chapterList.appendChild(li);
   }
   renderPagination();
