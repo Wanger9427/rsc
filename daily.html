@@ -240,7 +240,23 @@ function loadChapter(index){
     .then(res=>res.text())
     .then(text=>{
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
-      contentDiv.innerHTML = paragraphs.map(p=>`<p>${p}</p>`).join('') + renderNavButtons();
+      
+      // *** 优化部分开始 ***
+      const styledContent = paragraphs.map(p => {
+        // 针对每个段落添加样式
+        return `<p style="
+          line-height: 1.8; /* 增加行高，提升可读性 */
+          font-size: 16px; /* 默认字体大小 */
+          color: #333; /* 深灰色文本 */
+          margin-bottom: 1.5em; /* 增加段落间距 */
+          font-family: 'Georgia', 'Songti SC', serif; /* 切换到衬线字体，适合阅读 */
+        ">${p}</p>`;
+      }).join('');
+      
+      contentDiv.innerHTML = styledContent + renderNavButtons();
+      // *** 优化部分结束 ***
+
+      // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
     })
     .catch(err=>contentDiv.innerHTML = '加载失败：'+err);
