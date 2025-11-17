@@ -1,6 +1,7 @@
 Soldier Emotional Conduct Boundary Test
 士兵情感行为可控边界测试
 
+
 （四）
 
 梦话监听实验，正式终止。
@@ -190,5 +191,3 @@ Soldier Emotional Conduct Boundary Test
 
 
 END
-
-
