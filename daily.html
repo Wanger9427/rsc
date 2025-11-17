@@ -130,8 +130,24 @@ function renderNavButtons(){
   const currentTitle = chapters[currentChapterIndex].title || "";
 
   return `
+    <!-- 当前文章提示行 -->
     <div style="
-      margin-top:30px;
+      text-align:center;
+      font-size:12px;
+      color:#999;
+      margin:10px 0 8px 0;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:200px;
+      margin-left:auto;
+      margin-right:auto;
+    ">
+      当前文章：${currentTitle}
+    </div>
+
+    <!-- 底部三栏导航按钮 -->
+    <div style="
       padding:18px 10px;
       border-top:1px solid #e6e6e6;
       display:flex;
@@ -139,7 +155,6 @@ function renderNavButtons(){
       align-items:center;
       font-size:14px;
       color:#666;
-      gap:8px;
     ">
 
       <!-- 左栏：上一篇 -->
@@ -147,7 +162,7 @@ function renderNavButtons(){
         width:33%;
         display:flex;
         flex-direction:column;
-        justify-content:center;       /* 使按钮在垂直方向与中间对齐 */
+        justify-content:center;
         align-items:flex-start;
       ">
         ${prevIndex !== null ? `
@@ -167,40 +182,45 @@ function renderNavButtons(){
         ` : `<div style="height:32px;"></div>`}
       </div>
 
-      <!-- 中栏：当前文章 + 返回目录 -->
+      <!-- 中栏：返回目录 -->
       <div style="
         width:34%;
         display:flex;
         flex-direction:column;
-        justify-content:center;      /* 保持同一水平线 */
+        justify-content:center;
         align-items:center;
       ">
-        <div style="
-          font-size:12px;
-          color:#999;
-          margin-bottom:6px;
-          white-space:nowrap;
-          overflow:hidden;
-          text-overflow:ellipsis;
-          max-width:120px;
-          text-align:center;
-        ">当前文章：${currentTitle}</div>
         <button onclick="
           contentDiv.innerHTML='请选择标题开始阅读';
           window.scrollTo({top:0, behavior:'smooth'});
-        " style="padding:10px 18px; font-size:15px; font-weight:600; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;">
+        " style="padding:10px 18px; font-size:14px; font-weight:600; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;">
           返回目录
         </button>
       </div>
 
       <!-- 右栏：下一篇 -->
-      <div style="width:33%;display:flex;flex-direction:column;justify-content:center;     /* 保持同一水平线 */
+      <div style="
+        width:33%;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
         align-items:flex-end;
       ">
         ${nextIndex !== null ? `
-          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;text-align:right;">${nextTitle}</div>
-          <button onclick="loadChapter(${nextIndex})"style="padding:8px 14px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;">
-            下一篇</button>
+          <div style="
+            font-size:12px;
+            color:#999;
+            margin-bottom:6px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            max-width:100px;
+            text-align:right;
+          ">${nextTitle}</div>
+          <button onclick="loadChapter(${nextIndex})"
+            style="padding:8px 14px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;">
+            下一篇
+          </button>
         ` : `<div style="height:32px;"></div>`}
       </div>
 
