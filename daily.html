@@ -98,17 +98,58 @@ function renderChapterList(){
   renderPagination();
 }
 
-// 渲染分页按钮
+// 渲染分页按钮（优化为：【上一页】 (当前页码/总页数) 【下一页】）
 function renderPagination(){
   paginationDiv.innerHTML = "";
-  const totalPages = Math.ceil(chapters.length / PAGE_SIZE);
-  for(let i=0;i<totalPages;i++){
-    const btn = document.createElement('button');
-    btn.textContent = i+1;
-    if(i===currentPage) btn.disabled = true;
-    btn.addEventListener('click',()=>{currentPage=i; renderChapterList();});
-    paginationDiv.appendChild(btn);
+  
+  // 1. 计算总页数
+  const totalChapters = chapters.length;
+  const totalPages = Math.ceil(totalChapters / PAGE_SIZE);
+
+  // 如果总页数小于等于 1，则不显示分页控件
+  if (totalPages <= 1) {
+    return;
   }
+
+  // 当前页码（从 1 开始计数）
+  const displayCurrentPage = currentPage + 1;
+
+  // --- 创建【上一页】按钮 ---
+  const prevBtn = document.createElement('button');
+  prevBtn.textContent = '上一页';
+  // 如果当前页是第一页，禁用按钮
+  if (currentPage === 0) {
+    prevBtn.disabled = true;
+  } else {
+    // 点击按钮，切换到前一页
+    prevBtn.addEventListener('click', () => {
+      currentPage = currentPage - 1;
+      renderChapterList();
+    });
+  }
+  paginationDiv.appendChild(prevBtn);
+
+  // --- 显示页码信息 ---
+  const pageInfo = document.createElement('span');
+  pageInfo.textContent = ` (${displayCurrentPage} / ${totalPages}) `;
+  pageInfo.style.margin = '0 10px'; // 添加一些间距
+  pageInfo.style.fontSize = '14px';
+  paginationDiv.appendChild(pageInfo);
+
+  // --- 创建【下一页】按钮 ---
+  const nextBtn = document.createElement('button');
+  nextBtn.textContent = '下一页';
+  // 如果当前页是最后一页，禁用按钮
+  if (currentPage === totalPages - 1) {
+    nextBtn.disabled = true;
+  } else {
+    // 点击按钮，切换到下一页
+    nextBtn.addEventListener('click', () => {
+      currentPage = currentPage + 1;
+      renderChapterList();
+    });
+  }
+  paginationDiv.appendChild(nextBtn);
 }
 
 // 加载文章内容
