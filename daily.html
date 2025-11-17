@@ -52,14 +52,19 @@ const chapters = [
   {title:"非战术性误导的澄清纪要（二）", file:"daily/Clarification Report(2).txt"},
   {title:"非战术性误导的澄清纪要（三）", file:"daily/Clarification Report(3).txt"},
   {title:"狗、人、发情与公共秩序（上）", file:"daily/Dogs, Humans, Heat, and Public Order(1).txt",desc:"一条狗引发的袁朗发疯事件"},
-  {title:"狗、人、发情与公共秩序（下）", file:"daily/Dogs, Humans, Heat, and Public Order(2).txt"},
-  {title:"案例报告：老A精神状态全面崩溃", file:"daily/Case Report: Total Mental Collapse of Unit A.txt",desc:"一锅鸡汤引发的老A全员精神错乱"},
-  {title:"情报泄露与内部风控失效（上）", file:"daily/Information Leakage and Failure of Internal Controls(1).txt"},
-  {title:"情报泄露与内部风控失效（下）", file:"daily/Information Leakage and Failure of Internal Controls(2).txt"},
-  {title:"士兵情感行为可控边界测试（一）", file:"daily/Soldier Emotional(1).txt"},
+  {title:"狗、人、发情与公共秩序（下）", file:"daily/Dogs, Humans, Heat, and Public Order(2).txt"}, 
+  {title:"士兵情感行为可控边界测试（一）", file:"daily/Soldier Emotional(1).txt",desc:"一场由于成才说梦话引发的离谱实验"},
   {title:"士兵情感行为可控边界测试（二）", file:"daily/Soldier Emotional(2).txt"},
   {title:"士兵情感行为可控边界测试（三）", file:"daily/Soldier Emotional(3).txt"},
   {title:"士兵情感行为可控边界测试（四）", file:"daily/Soldier Emotional(4).txt"},
+  {title:"案例报告：老A精神状态全面崩溃", file:"daily/Case Report: Total Mental Collapse of Unit A.txt",desc:"一锅鸡汤引发的老A全员精神错乱"},
+  {title:"情报泄露与内部风控失效（上）", file:"daily/Information Leakage and Failure of Internal Controls(1).txt",desc:"火眼金睛的吴哲同志一举破获袁成纸上调情的重大风纪问题案件"},
+  {title:"情报泄露与内部风控失效（下）", file:"daily/Information Leakage and Failure of Internal Controls(2).txt"},
+  {title:"心理压力缓解治疗干预记录（一）", file:"daily/Psychological Stress Reduction(1).txt",desc:"成才最近老是流眼泪，于是袁师傅展开了一场治疗活动"},
+  {title:"心理压力缓解治疗干预记录（二）", file:"daily/Psychological Stress Reduction(2).txt"},
+  {title:"心理压力缓解治疗干预记录（三）", file:"daily/Psychological Stress Reduction(3).txt"},
+  {title:"果味狂欢失控事件(上)", file:"daily/Fruit-Flavored(1).txt",desc:"成才误饮了一瓶神奇饮料，把所有人都撩了一遍，但是他不记得了"},
+  {title:"果味狂欢失控事件(下)", file:"daily/Fruit-Flavored(2).txt"},
 ];
 
 const PAGE_SIZE = 15; // 每页显示 15 篇文章
@@ -133,90 +138,34 @@ function renderNavButtons(){
   const titleMaxWidth = '80px'; 
 
   return `
-    <div style="
-      text-align:center;
-      font-size:12px;
-      color:#999;
-      margin:10px 0 10px 0;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width:200px;
-      margin-left:auto;
-      margin-right:auto;
-    ">
+    <div style="text-align:center;font-size:12px;color:#999;margin:10px 0 10px 0;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;max-width:200px;margin-left:auto;margin-right:auto;">
       当前文章：${currentTitle}
     </div>
 
-    <div style="
-      padding:15px 10px;
-      border-top:1px solid #e6e6e6;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      font-size:14px;
-      color:#666;
-    ">
+    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
 
-      <div style="
-        width:33%; 
-        display:flex;
-        flex-direction:column;
-        align-items:flex-start;
-        box-sizing: border-box; 
-      ">
+      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
         ${prevIndex !== null ? `
-          <div style="
-            font-size:12px;
-            color:#999;
-            margin-bottom:6px;
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-            max-width:${titleMaxWidth}; /* 应用新宽度 */
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; /* 应用新宽度 */
           ">${prevTitle}</div>
-          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" onclick="loadChapter(${prevIndex})">
-            上一篇
-          </button>
+          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; 
+          background:#fff;" onclick="loadChapter(${prevIndex})">上一篇</button>
         ` : `<div style="height:32px;"></div>`}
       </div>
 
-      <div style="
-        width:34%; 
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        box-sizing: border-box; 
-      ">
-        <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;" onclick="
-          contentDiv.innerHTML='请选择标题开始阅读';
-          window.scrollTo({top:0, behavior:'smooth'});
-        ">
-          返回目录
-        </button>
+      <div style="width:34%; display:flex;flex-direction:column;align-items:center;box-sizing: border-box; ">
+        <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;
+        " onclick="contentDiv.innerHTML='请选择标题开始阅读';window.scrollTo({top:0, behavior:'smooth'});">返回目录</button>
       </div>
 
-      <div style="
-        width:33%; 
-        display:flex;
-        flex-direction:column;
-        align-items:flex-end;
-        box-sizing: border-box; 
-      ">
+      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
         ${nextIndex !== null ? `
-          <div style="
-            font-size:12px;
-            color:#999;
-            margin-bottom:6px;
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-            max-width:${titleMaxWidth}; /* 应用新宽度 */
-            text-align:right;
-          ">${nextTitle}</div>
-          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" onclick="loadChapter(${nextIndex})">
-            下一篇
-          </button>
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; /* 应用新宽度 */text-align:right;">${nextTitle}</div>
+          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" 
+          onclick="loadChapter(${nextIndex})">下一篇</button>
         ` : `<div style="height:32px;"></div>`}
       </div>
 
