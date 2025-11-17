@@ -120,16 +120,43 @@ function loadChapter(index){
     .catch(err=>contentDiv.innerHTML = '加载失败：'+err);
 }
 
-// 渲染“上一篇 / 返回目录 / 下一篇”
+// 渲染底部导航栏
 function renderNavButtons(){
-  const prevIndex = currentChapterIndex>0 ? currentChapterIndex-1 : null;
-  const nextIndex = currentChapterIndex<chapters.length-1 ? currentChapterIndex+1 : null;
+  const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
+  const nextIndex = currentChapterIndex < chapters.length - 1 ? currentChapterIndex + 1 : null;
+
+  const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
+  const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
 
   return `
-    <div style="margin-top:15px; text-align:center;">
-      ${prevIndex!==null? `<button onclick="loadChapter(${prevIndex})">上一篇</button>` : ''}
-      <button onclick="contentDiv.innerHTML='请选择标题开始阅读'; window.scrollTo({top:0, behavior:'smooth'});">返回目录</button>
-      ${nextIndex!==null? `<button onclick="loadChapter(${nextIndex})">下一篇</button>` : ''}
+    <div style="margin-top:30px;padding:20px 10px;border-top:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#666;">
+      <!-- 上一篇区域 -->
+      <div style="text-align:left; width:33%;">
+        ${prevIndex !== null ? `
+          <div style="font-size:12px; color:#999; margin-bottom:6px;">${prevTitle}</div>
+          <button onclick="loadChapter(${prevIndex})"
+            style="padding:8px 15px; font-size:14px; cursor:pointer;">
+            上一篇
+          </button>
+        ` : ""}
+      </div>
+      <!-- 返回目录居中 -->
+      <div style="text-align:center; width:34%;">
+        <button onclick="contentDiv.innerHTML='请选择标题开始阅读'; window.scrollTo({top:0, behavior:'smooth'});"
+          style="padding:10px 18px; font-size:15px; font-weight:bold; cursor:pointer;">
+          返回目录
+        </button>
+      </div>
+      <!-- 下一篇区域 -->
+      <div style="text-align:right; width:33%;">
+        ${nextIndex !== null ? `
+          <div style="font-size:12px; color:#999; margin-bottom:6px;">${nextTitle}</div>
+          <button onclick="loadChapter(${nextIndex})"
+            style="padding:8px 15px; font-size:14px; cursor:pointer;">
+            下一篇
+          </button>
+        ` : ""}
+      </div>
     </div>
   `;
 }
