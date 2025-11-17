@@ -2,122 +2,105 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>Wanger个人存文站</title>
+  <title>我的小说站</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: "Microsoft YaHei", sans-serif;
-      line-height: 1.8;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
       background-color: #fdfdfd;
       color: #333;
+      margin: 0;
+      padding: 0;
     }
-    h1 {
+
+    header {
       text-align: center;
-      margin-bottom: 30px;
+      padding: 40px 20px 20px 20px;
+      background-color: #1a73e8;
+      color: #fff;
     }
-    ul {
-      list-style: none;
-      padding-left: 0;
+    header h1 {
+      margin: 0;
+      font-size: 28px;
     }
-    li {
-      margin-bottom: 10px;
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
     }
-    a {
+
+    .section-card {
+      background-color: #f5f5f5;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .section-card a {
       text-decoration: none;
       color: #1a73e8;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    #content {
-      margin-top: 40px;
-    }
-    #content p {
-      margin-bottom: 16px;
-    }
-    #passwordSection {
+      font-weight: bold;
+      font-size: 18px;
+      display: block;
       margin-top: 20px;
-      display: none;
     }
-    input[type="password"] {
-      padding: 5px;
-      font-size: 16px;
+
+    .section-card p {
+      color: #555;
+      font-size: 14px;
+      margin-top: 10px;
     }
-    button {
-      padding: 5px 10px;
-      font-size: 16px;
-      margin-left: 5px;
-      cursor: pointer;
+
+    @media (max-width: 500px) {
+      main {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>小说目录</h1>
-  <ul id="chapterList">
-    <!-- 这里列出你的章节 -->
-    <li><a href="#" data-file="Dogs, Humans, Heat, and Public Order(1).txt">狗、人、发情与公共秩序（上）</a></li>
-    <li><a href="#" data-file="Dogs, Humans, Heat, and Public Order(2).txt">狗、人、发情与公共秩序（下）</a></li>
-    <!-- 可复制 li 标签添加更多章节 -->
-    <!-- 如果某章是 R18，可以加 data-r18="true" -->
-    <!-- <li><a href="#" data-file="chapterR18.txt" data-r18="true">秘密章节 (R18)</a></li> -->
-  </ul>
 
-  <div id="passwordSection">
-    <label>请输入密码访问章节：</label>
-    <input type="password" id="chapterPassword">
-    <button onclick="checkPassword()">确认</button>
+<header>
+  <h1>我的小说站</h1>
+  <p>点击下方分区进入对应系列</p>
+</header>
+
+<main>
+  <div class="section-card">
+    <h2>【袁成】重逢</h2>
+    <p>主要讲述袁朗与成才的重逢故事，情感拉扯为主</p>
+    <a href="reunion.html">进入分区</a>
   </div>
 
-  <div id="content">请选择章节开始阅读</div>
+  <div class="section-card">
+    <h2>【袁成】老A日常系列</h2>
+    <p>记录老A队伍的日常欢乐和沙雕故事</p>
+    <a href="daily.html">进入分区</a>
+  </div>
 
-  <script>
-    const chapterLinks = document.querySelectorAll('#chapterList a');
-    let pendingR18 = null;
+  <div class="section-card">
+    <h2>【袁成】老A版《走近科学》</h2>
+    <p>以诡异事件+科学推理为主题的特种部队故事</p>
+    <a href="science.html">进入分区</a>
+  </div>
 
-    chapterLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const file = link.getAttribute('data-file');
-        const isR18 = link.getAttribute('data-r18') === 'true';
+  <div class="section-card">
+    <h2>【袁成】短篇文</h2>
+    <p>零散短篇，轻松、暧昧或小段子合集</p>
+    <a href="shorts.html">进入分区</a>
+  </div>
+</main>
 
-        if(isR18){
-          // 显示密码输入框
-          pendingR18 = file;
-          document.getElementById('passwordSection').style.display = 'block';
-        } else {
-          loadChapter(file);
-        }
-      });
-    });
-
-    function checkPassword(){
-      const pwd = document.getElementById('chapterPassword').value;
-      // 这里你可以自定义密码，例如 '1234'
-      if(pwd === '1234' && pendingR18){
-        loadChapter(pendingR18);
-        document.getElementById('passwordSection').style.display = 'none';
-        document.getElementById('chapterPassword').value = '';
-        pendingR18 = null;
-      } else {
-        alert('密码错误');
-      }
-    }
-
-    function loadChapter(file){
-      fetch(file)
-        .then(response => response.text())
-        .then(text => {
-          const paragraphs = text.split('\n').filter(line => line.trim() !== '');
-          document.getElementById('content').innerHTML =
-            paragraphs.map(p => `<p>${p}</p>`).join('');
-        })
-        .catch(err => {
-          document.getElementById('content').innerHTML = '加载失败：' + err;
-        });
-    }
-  </script>
 </body>
 </html>
