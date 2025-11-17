@@ -154,20 +154,50 @@ const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 
+// 获取已读章节索引的集合 (从浏览器存储中读取)
+function getReadChapters() {
+  const readChaptersJson = localStorage.getItem('readChapters');
+  // 如果有存储，则解析 JSON 并转换为 Set，否则返回空的 Set
+  return readChaptersJson ? new Set(JSON.parse(readChaptersJson)) : new Set();
+}
+
+// 标记章节为已读并保存 (保存到浏览器存储中)
+function markChapterAsRead(index) {
+  const readChapters = getReadChapters();
+  // 使用当前章节在 chapters 数组中的索引作为标识符
+  readChapters.add(index); 
+  // 将 Set 转换回数组并存储为 JSON 字符串
+  localStorage.setItem('readChapters', JSON.stringify(Array.from(readChapters)));
+}
+  
 // 渲染章节列表
 function renderChapterList(){
   chapterList.innerHTML = "";
   const start = currentPage * PAGE_SIZE;
   const end = Math.min(start + PAGE_SIZE, chapters.length);
+  
+  // 1. 获取已读章节列表
+  const readChapters = getReadChapters(); 
+
   for(let i=start; i<end; i++){
     const li = document.createElement('li');
     li.className = "chapter-item";
+    
     // 标题
     const a = document.createElement('a');
     a.className = "chapter-title";
     a.textContent = chapters[i].title;
     a.addEventListener('click', () => { loadChapter(i); });
-    // 简介（如果没有给简介，则设为空字符串）
+    
+    // 2. 检查是否已读并设置灰色
+    if (readChapters.has(i)) {
+        a.style.color = '#999'; // 已读标题为灰色
+        a.style.fontWeight = 'normal'; 
+    } else {
+        a.style.color = '#337ab7'; // 未读标题颜色（蓝色）
+    }
+
+    // 简介
     const desc = document.createElement('span');
     desc.className = "chapter-desc";
     desc.textContent = chapters[i].desc || "";
@@ -241,7 +271,6 @@ function loadChapter(index){
     .then(text=>{
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
       
-      // *** 优化部分开始 ***
       const styledContent = paragraphs.map(p => {
         // 针对每个段落添加样式
         return `<p style="
@@ -249,19 +278,23 @@ function loadChapter(index){
           font-size: 16px; /* 默认字体大小 */
           color: #333; /* 深灰色文本 */
           margin-bottom: 1.5em; /* 增加段落间距 */
-          font-family: 'Georgia', 'Songti SC', serif; /* 切换到衬线字体，适合阅读 */
+          text-align: justify; /* 两端对齐 */
+          font-family: 'Microsoft YaHei', sans-serif; /* 微软雅黑字体 */
         ">${p}</p>`;
       }).join('');
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
-      // *** 优化部分结束 ***
-
+      
       // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
+
+      // 标记为已读并刷新列表 
+      markChapterAsRead(index);
+      renderChapterList();
     })
     .catch(err=>contentDiv.innerHTML = '加载失败：'+err);
 }
-
+  
 // 渲染底部导航栏
 function renderNavButtons(){
   const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
