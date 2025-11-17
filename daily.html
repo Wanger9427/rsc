@@ -129,6 +129,9 @@ function renderNavButtons(){
   const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
   const currentTitle = chapters[currentChapterIndex].title || "";
 
+  // 定义一个固定的最大宽度（例如：60px），用于控制标题截断的长度
+  const titleMaxWidth = '60px'; 
+
   return `
     <div style="
       text-align:center;
@@ -156,12 +159,11 @@ function renderNavButtons(){
     ">
 
       <div style="
-        flex: 1; /* 使用弹性分配，替代固定的 width:33%; */
+        width:33%; 
         display:flex;
         flex-direction:column;
         align-items:flex-start;
-        box-sizing: border-box; /* 确保 padding 不会导致溢出 */
-        padding-right: 5px; /* 添加少量间距 */
+        box-sizing: border-box; /* 核心修正：防止 padding/border 导致溢出 */
       ">
         ${prevIndex !== null ? `
           <div style="
@@ -171,22 +173,22 @@ function renderNavButtons(){
             white-space:nowrap;
             overflow:hidden;
             text-overflow:ellipsis;
-            max-width:100%; /* 允许标题占满整个弹性宽度 */
+            max-width:${titleMaxWidth}; /* 限制宽度，实现截断 */
           ">${prevTitle}</div>
-          <button style="padding:8px 15px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" onclick="loadChapter(${prevIndex})">
+          <button style="padding:8px 20px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" onclick="loadChapter(${prevIndex})">
             上一篇
           </button>
         ` : `<div style="height:32px;"></div>`}
       </div>
 
       <div style="
-        flex: 1; /* 使用弹性分配，替代固定的 width:34%; */
+        width:34%; 
         display:flex;
         flex-direction:column;
         align-items:center;
-        box-sizing: border-box;
+        box-sizing: border-box; /* 核心修正 */
       ">
-        <button style="padding:8px 15px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;" onclick="
+        <button style="padding:8px 20px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;" onclick="
           contentDiv.innerHTML='请选择标题开始阅读';
           window.scrollTo({top:0, behavior:'smooth'});
         ">
@@ -195,12 +197,11 @@ function renderNavButtons(){
       </div>
 
       <div style="
-        flex: 1; /* 使用弹性分配，替代固定的 width:33%; */
+        width:33%; 
         display:flex;
         flex-direction:column;
         align-items:flex-end;
-        box-sizing: border-box;
-        padding-left: 5px; /* 添加少量间距 */
+        box-sizing: border-box; /* 核心修正 */
       ">
         ${nextIndex !== null ? `
           <div style="
@@ -210,10 +211,10 @@ function renderNavButtons(){
             white-space:nowrap;
             overflow:hidden;
             text-overflow:ellipsis;
-            max-width:100%; /* 允许标题占满整个弹性宽度 */
+            max-width:${titleMaxWidth}; /* 限制宽度，实现截断 */
             text-align:right;
           ">${nextTitle}</div>
-          <button style="padding:8px 15px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" onclick="loadChapter(${nextIndex})">
+          <button style="padding:8px 20px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" onclick="loadChapter(${nextIndex})">
             下一篇
           </button>
         ` : `<div style="height:32px;"></div>`}
