@@ -122,7 +122,7 @@
 <main>
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
-  <div id="content">请选择标题开始阅读</div>
+  <div id="content">点击标题开始阅读</div>
 </main>
 
 <script>
@@ -147,7 +147,7 @@ const chapters = [
   {title:"果味狂欢失控事件(下)", file:"daily/Fruit-Flavored(2).txt"},
 ];
 
-const PAGE_SIZE = 12; // 每页显示 12 篇文章
+const PAGE_SIZE = 10; // 每页显示 10 篇文章
 let currentPage = 0;
 const chapterList = document.getElementById('chapterList');
 const paginationDiv = document.getElementById('pagination');
@@ -178,7 +178,7 @@ function renderChapterList(){
   renderPagination();
 }
 
-// 渲染分页按钮（优化为：【上一页】 (当前页码/总页数) 【下一页】）
+// 渲染分页按钮
 function renderPagination(){
   paginationDiv.innerHTML = "";
   
@@ -297,6 +297,5 @@ function renderNavButtons(){
 // 初始化
 renderChapterList();
 </script>
-
 </body>
 </html>
