@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>【袁成】老A版《走近科学》</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family:"Microsoft YaHei",sans-serif; background:#fdfdfd; color:#333; margin:0; padding:0; }
+  header { text-align:center; padding:30px 20px; background:#1a73e8; color:#fff; }
+  header h1 { margin:0; font-size:26px; }
+  main { max-width:800px; margin:20px auto; padding:0 20px; }
+  /* ===章节列表=== */
+  #chapterList { list-style:none; padding-left:0; margin-bottom:20px; }
+  /* 每一行：改为上下结构，不再侧向排布 */
+  .chapter-item {margin-bottom:14px;}
+  /* 标题 */
+  .chapter-title {display:block;text-decoration:none;color:#1a73e8;font-weight:bold;cursor:pointer;font-size:17px;}
+  .chapter-title:hover {text-decoration:underline;}
+  /* 简介：放在标题下方 */
+  .chapter-desc {display:block;margin-top:4px;font-size:13px;color:#888;line-height:1.4;}
+  /* 分页 */
+  #pagination { text-align:center; margin-top:15px; }
+  #pagination button { margin:0 3px; padding:5px 10px; cursor:pointer; }
+  /* 内容框 */
+  #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
+  #content p { margin-bottom:16px; }
+</style>
+
+</head>
+<body>
+
+<header style="
+    padding-bottom: 15px; 
+    border-bottom: 1px solid #333;
+    background: #1a73e8; /* 科技蓝 */
+    color: #fff; /* 默认文字为白色 */
+">
+    <h1 style="
+        font-size: 28px; /* 字号增大 */
+        color: #fff; /* 白色字体 */
+        margin-bottom: 5px; 
+        text-align: center; /* 居中 */
+    ">
+        【袁成】短篇文
+    </h1>
+    <p style="font-size: 14px; color: #fff; margin-bottom: 15px; text-align: center; ">
+        沙雕灵异的科学小故事
+    </p>
+    
+   <div style="
+    display: flex;
+    justify-content: center; /* PC端：将内容块居中 */
+    margin-top: 10px;
+">
+    <div style="
+        display: flex;
+        align-items: center;
+        max-width: 100%; /* 确保不超过父容器 */
+        padding: 0 10px; /* 增加左右内边距，防止贴边 */
+    ">
+        
+        <style>
+            .nav-btn {
+                padding: 6px 12px;
+                border-radius: 20px;
+                text-decoration: none;
+                font-size: 14px;
+                flex-shrink: 0; /* 关键：确保按钮不被挤压 */
+                margin-right: 15px;
+                white-space: nowrap;
+                transition: background 0.2s;
+            }
+        </style>
+
+        <a href="index.html" class="nav-btn" style="
+            color: #fff;
+            background: #5cb85c; /* 活力绿色 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        ">
+            返回首页
+        </a>
+        
+        <div style="
+            display: flex;
+            align-items: center;
+            overflow-x: auto; /* 关键：允许横向滚动 */
+            padding-bottom: 5px; /* 留出滚动条空间 */
+            -webkit-overflow-scrolling: touch;
+            /* 隐藏滚动条样式 */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        ">
+            <style>
+                /* 隐藏 Webkit 滚动条的 CSSHack */
+                header div::-webkit-scrollbar { display: none; }
+            </style>
+          
+            <a href="daily.html" class="nav-btn" style="
+                color: #fff;
+                background: #B4A2BA; /* 浅紫 */
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">老A日常系列</a>
+          
+            <a href="shorts.html" class="nav-btn" style="
+                color: #fff;
+                background: #f0ad4e; /* 温暖橙色 */
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">短篇文</a>
+
+            <a href="other.html" class="nav-btn" style="
+                color: #fff;
+                background: #474747; /* 深灰色 */
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">非袁成等杂文</a>
+
+            <a href="reunion.html" class="nav-btn" style="
+                color: #fff;
+                background: #A2B591; /* 军绿色 */
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                margin-right: 0; /* 最后一个按钮移除右边距 */
+            ">《重逢》</a>
+        </div>
+        
+    </div>
+</div>
+</header>
+
+<main>
+  <ul id="chapterList"></ul>
+  <div id="pagination"></div>
+  <div id="content">点击标题开始阅读</div>
+</main>
+
+<script>
+const chapters = [  
+  {title:"午夜心跳", file:"science/Midnight Heartbeat.txt",},
+  {title:"午夜军歌惊魂：是亡灵警示，还是记忆的回响？（上）", file:"science/Midnight March Scare(1).txt",},
+  {title:"午夜军歌惊魂：是亡灵警示，还是记忆的回响？（下）", file:"science/Midnight March Scare(2).txt",},
+  {title:"谁在呼唤我：潜伏在水管里的“她”（上）", file:"science/Who Is Calling Me(1).txt",},
+  {title:"谁在呼唤我：潜伏在水管里的“她”（下）", file:"science/Who Is Calling Me(2).txt",},
+
+];
+
+const PAGE_SIZE = 10; // 每页显示 10 篇文章
+let currentPage = 0;
+const chapterList = document.getElementById('chapterList');
+const paginationDiv = document.getElementById('pagination');
+const contentDiv = document.getElementById('content');
+let currentChapterIndex = 0;
+
+// 获取已读章节索引的集合 (从浏览器存储中读取)
+function getReadChapters() {
+  const readChaptersJson = localStorage.getItem('readChapters');
+  // 如果有存储，则解析 JSON 并转换为 Set，否则返回空的 Set
+  return readChaptersJson ? new Set(JSON.parse(readChaptersJson)) : new Set();
+}
+
+// 标记章节为已读并保存 (保存到浏览器存储中)
+function markChapterAsRead(index) {
+  const readChapters = getReadChapters();
+  // 使用当前章节在 chapters 数组中的索引作为标识符
+  readChapters.add(index); 
+  // 将 Set 转换回数组并存储为 JSON 字符串
+  localStorage.setItem('readChapters', JSON.stringify(Array.from(readChapters)));
+}
+  
+// 渲染章节列表
+function renderChapterList(){
+  chapterList.innerHTML = "";
+  const start = currentPage * PAGE_SIZE;
+  const end = Math.min(start + PAGE_SIZE, chapters.length);
+  
+  // 1. 获取已读章节列表
+  const readChapters = getReadChapters(); 
+
+  for(let i=start; i<end; i++){
+    const li = document.createElement('li');
+    li.className = "chapter-item";
+    
+    // 标题
+    const a = document.createElement('a');
+    a.className = "chapter-title";
+    a.textContent = chapters[i].title;
+    a.addEventListener('click', () => { loadChapter(i); });
+    
+    // 2. 检查是否已读并设置黑色
+    if (readChapters.has(i)) {
+        a.style.color = '#000000'; // 已读标题为黑色
+        a.style.fontWeight = 'normal'; 
+    } else {
+        a.style.color = '#337ab7'; // 未读标题颜色（蓝色）
+    }
+
+    // 简介
+    const desc = document.createElement('span');
+    desc.className = "chapter-desc";
+    desc.textContent = chapters[i].desc || "";
+    li.appendChild(a);
+    li.appendChild(desc);
+    chapterList.appendChild(li);
+  }
+  renderPagination();
+}
+
+  // 限制级提示函数
+
+function showRestrictedWarning() {
+    return new Promise((resolve, reject) => {
+        const message = "注意：此章节包含【限制级】内容，请确认您已年满18岁。";
+        // 使用 confirm 弹出原生弹窗
+        if (window.confirm(message)) {
+            resolve(); // 用户点击“确认”
+        } else {
+            reject(); // 用户点击“取消”
+        }
+    });
+}
+  
+// 渲染分页按钮
+function renderPagination(){
+  paginationDiv.innerHTML = "";
+  
+  // 1. 计算总页数
+  const totalChapters = chapters.length;
+  const totalPages = Math.ceil(totalChapters / PAGE_SIZE);
+
+  // 如果总页数小于等于 1，则不显示分页控件
+  if (totalPages <= 1) {
+    return;
+  }
+
+  // 当前页码（从 1 开始计数）
+  const displayCurrentPage = currentPage + 1;
+
+  // --- 创建【上一页】按钮 ---
+  const prevBtn = document.createElement('button');
+  prevBtn.textContent = '上一页';
+  // 如果当前页是第一页，禁用按钮
+  if (currentPage === 0) {
+    prevBtn.disabled = true;
+  } else {
+    // 点击按钮，切换到前一页
+    prevBtn.addEventListener('click', () => {
+      currentPage = currentPage - 1;
+      renderChapterList();
+    });
+  }
+  paginationDiv.appendChild(prevBtn);
+
+  // --- 显示页码信息 ---
+  const pageInfo = document.createElement('span');
+  pageInfo.textContent = ` (${displayCurrentPage} / ${totalPages}) `;
+  pageInfo.style.margin = '0 10px'; // 添加一些间距
+  pageInfo.style.fontSize = '14px';
+  paginationDiv.appendChild(pageInfo);
+
+  // --- 创建【下一页】按钮 ---
+  const nextBtn = document.createElement('button');
+  nextBtn.textContent = '下一页';
+  // 如果当前页是最后一页，禁用按钮
+  if (currentPage === totalPages - 1) {
+    nextBtn.disabled = true;
+  } else {
+    // 点击按钮，切换到下一页
+    nextBtn.addEventListener('click', () => {
+      currentPage = currentPage + 1;
+      renderChapterList();
+    });
+  }
+  paginationDiv.appendChild(nextBtn);
+}
+
+
+// 加载文章内容
+function loadChapter(index){
+  const chapter = chapters[index]; // 获取当前章节对象
+  const file = chapter.file;
+  currentChapterIndex = index;
+
+  // --- 新增逻辑：检查限制级标记 ---
+  let loadPromise;
+  
+  if (chapter.restricted) {
+    // 1. 如果是限制级，先显示警告弹窗
+    loadPromise = showRestrictedWarning().then(() => {
+        // 如果用户确认，再执行 fetch 读取文件
+        return fetch(file);
+    }).catch(() => {
+        // 如果用户取消，则停止操作，并返回一个不会继续执行的 Promise
+        return Promise.reject('用户取消阅读限制级内容');
+    });
+  } else {
+    // 2. 如果非限制级，直接执行 fetch
+    loadPromise = fetch(file);
+  }
+  // --- 新增逻辑结束 ---
+  
+  loadPromise
+    .then(res => res.text())
+    .then(text => {
+      const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
+      
+      const styledContent = paragraphs.map(p => {
+        // 针对每个段落添加样式 (保持您的美化代码)
+        return `<p style="
+          line-height: 1.8;
+          font-size: 16px;
+          color: #333;
+          margin-bottom: 1.5em;
+          text-align: justify;
+          font-family: 'Microsoft YaHei', sans-serif;
+        ">${p}</p>`;
+      }).join('');
+      
+      contentDiv.innerHTML = styledContent + renderNavButtons();
+      
+      // 滚动到内容顶部
+      window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
+
+      // 标记为已读并刷新列表
+      markChapterAsRead(index);
+      renderChapterList();
+    })
+    .catch(err => {
+        // 如果用户取消阅读，catch 块会捕获到 '用户取消阅读限制级内容'
+        if (err !== '用户取消阅读限制级内容') {
+             contentDiv.innerHTML = '加载失败：' + err;
+        }
+    });
+}
+// 渲染底部导航栏
+function renderNavButtons(){
+  const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
+  const nextIndex = currentChapterIndex < chapters.length - 1 ? currentChapterIndex + 1 : null;
+
+  const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
+  const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
+  const currentTitle = chapters[currentChapterIndex].title || "";
+
+  // 优化：将标题最大宽度增加到 80px，留出更多空间显示文字
+  const titleMaxWidth = '80px'; 
+
+  return `
+    <div style="text-align:center;font-size:12px;color:#999;margin:10px 0 10px 0;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;max-width:200px;margin-left:auto;margin-right:auto;">
+      当前文章：${currentTitle}
+    </div>
+
+    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
+
+      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
+        ${prevIndex !== null ? `
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; /* 应用新宽度 */
+          ">${prevTitle}</div>
+          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; 
+          background:#fff;" onclick="loadChapter(${prevIndex})">上一篇</button>
+        ` : `<div style="height:32px;"></div>`}
+      </div>
+
+      <div style="width:34%; display:flex;flex-direction:column;align-items:center;box-sizing: border-box; ">
+        <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;
+        " onclick="contentDiv.innerHTML='请选择标题开始阅读';window.scrollTo({top:0, behavior:'smooth'});">返回目录</button>
+      </div>
+
+      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
+        ${nextIndex !== null ? `
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; /* 应用新宽度 */text-align:right;">${nextTitle}</div>
+          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" 
+          onclick="loadChapter(${nextIndex})">下一篇</button>
+        ` : `<div style="height:32px;"></div>`}
+      </div>
+
+    </div>
+  `;
+}
+
+// 初始化
+renderChapterList();
+</script>
+</body>
+</html>
