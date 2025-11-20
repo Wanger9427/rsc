@@ -126,6 +126,17 @@
 </header>
 
 <main>
+<div id="searchContainer" style="margin-bottom: 20px; text-align: center;">
+    <input type="text" id="chapterSearch" placeholder="输入文章标题关键词..." style="
+        padding: 8px 12px; 
+        width: 90%; 
+        max-width: 500px; 
+        border: 1px solid #ccc; 
+        border-radius: 5px;
+        font-size: 16px;
+    ">
+</div>
+
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
   <div id="content">点击标题开始阅读</div>
@@ -177,6 +188,11 @@ const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 
+// --- 新增搜索功能变量和元素引用 ---
+const chapterSearchInput = document.getElementById('chapterSearch');
+let filteredChapters = chapters; // 初始时，过滤后的列表等于全部列表
+// ------------------------------------
+
 // 获取已读章节索引的集合 (从浏览器存储中读取)
 function getReadChapters() {
   const readChaptersJson = localStorage.getItem('readChapters');
@@ -195,62 +211,69 @@ function markChapterAsRead(index) {
   
 // 渲染章节列表
 function renderChapterList(){
-  chapterList.innerHTML = "";
-  const start = currentPage * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, chapters.length);
-  
-  // 1. 获取已读章节列表
-  const readChapters = getReadChapters(); 
-
-  for(let i=start; i<end; i++){
-    const li = document.createElement('li');
-    li.className = "chapter-item";
-    
-    // 标题
-    const a = document.createElement('a');
-    a.className = "chapter-title";
-    a.textContent = chapters[i].title;
-    a.addEventListener('click', () => { loadChapter(i); });
-    
-    // 2. 检查是否已读并设置黑色
-    if (readChapters.has(i)) {
-        a.style.color = '#000000'; // 已读标题为黑色
-        a.style.fontWeight = 'normal'; 
+    // 1. 根据搜索框内容过滤章节
+    const query = chapterSearchInput.value.toLowerCase().trim();
+    if (query) {
+        // 如果有搜索词，则过滤标题包含关键词的章节
+        filteredChapters = chapters.filter(chap => chap.title.toLowerCase().includes(query));
     } else {
-        a.style.color = '#337ab7'; // 未读标题颜色（蓝色）
+        // 否则显示全部章节
+        filteredChapters = chapters;
     }
 
-    // 简介
-    const desc = document.createElement('span');
-    desc.className = "chapter-desc";
-    desc.textContent = chapters[i].desc || "";
-    li.appendChild(a);
-    li.appendChild(desc);
-    chapterList.appendChild(li);
-  }
-  renderPagination();
-}
+    chapterList.innerHTML = "";
 
-  // 限制级提示函数
+    const totalChapters = filteredChapters.length;
+    const start = currentPage * PAGE_SIZE;
+    const end = Math.min(start + PAGE_SIZE, totalChapters);
+    
+    // 获取已读章节列表
+    const readChapters = getReadChapters(); 
 
-function showRestrictedWarning() {
-    return new Promise((resolve, reject) => {
-        const message = "注意：此章节包含【限制级】内容，请确认您已年满18岁。";
-        // 使用 confirm 弹出原生弹窗
-        if (window.confirm(message)) {
-            resolve(); // 用户点击“确认”
+    for(let i=start; i<end; i++){
+        const chapter = filteredChapters[i]; // 获取当前章节对象
+        const originalIndex = chapters.findIndex(c => c.file === chapter.file);
+        
+        const li = document.createElement('li');
+        li.className = "chapter-item";
+        
+        // 标题
+        const a = document.createElement('a');
+        a.className = "chapter-title";
+        a.textContent = chapter.title;
+        
+        // 点击事件：使用原始索引调用 loadChapter
+        a.addEventListener('click', () => { 
+            if (originalIndex !== -1) {
+                loadChapter(originalIndex); 
+            }
+        });
+        
+        // 检查是否已读并设置黑色
+        if (originalIndex !== -1 && readChapters.has(originalIndex)) {
+            a.style.color = '#000000'; 
+            a.style.fontWeight = 'normal'; 
         } else {
-            reject(); // 用户点击“取消”
+            a.style.color = '#337ab7'; // 未读标题颜色
         }
-    });
-}
-  
-// 渲染分页按钮
+
+        // 简介
+        const desc = document.createElement('span');
+        desc.className = "chapter-desc";
+        desc.textContent = chapter.desc || "";
+        li.appendChild(a);
+        li.appendChild(desc);
+        chapterList.appendChild(li);
+    }
+    renderPagination(); // 调用分页函数
+}  
+
+// 渲染分页按钮 (已修改以支持搜索后的 filteredChapters)
 function renderPagination(){
   paginationDiv.innerHTML = "";
   
-  // 1. 计算总页数
-  const totalChapters = chapters.length;
+  // 1. 计算总页数 (基于过滤后的列表)
+  const totalChapters = filteredChapters.length; 
   const totalPages = Math.ceil(totalChapters / PAGE_SIZE);
 
   // 如果总页数小于等于 1，则不显示分页控件
@@ -264,11 +287,13 @@ function renderPagination(){
   // --- 创建【上一页】按钮 ---
   const prevBtn = document.createElement('button');
   prevBtn.textContent = '上一页';
-  // 如果当前页是第一页，禁用按钮
+  prevBtn.style.padding = '5px 10px'; 
+  prevBtn.style.marginRight = '5px';
+  prevBtn.style.cursor = 'pointer';
+  
   if (currentPage === 0) {
     prevBtn.disabled = true;
   } else {
-    // 点击按钮，切换到前一页
     prevBtn.addEventListener('click', () => {
       currentPage = currentPage - 1;
       renderChapterList();
@@ -279,27 +304,70 @@ function renderPagination(){
   // --- 显示页码信息 ---
   const pageInfo = document.createElement('span');
   pageInfo.textContent = ` (${displayCurrentPage} / ${totalPages}) `;
-  pageInfo.style.margin = '0 10px'; // 添加一些间距
+  pageInfo.style.margin = '0 10px'; 
   pageInfo.style.fontSize = '14px';
   paginationDiv.appendChild(pageInfo);
 
   // --- 创建【下一页】按钮 ---
   const nextBtn = document.createElement('button');
   nextBtn.textContent = '下一页';
-  // 如果当前页是最后一页，禁用按钮
+  nextBtn.style.padding = '5px 10px'; 
+  nextBtn.style.marginLeft = '5px';
+  nextBtn.style.cursor = 'pointer';
+
   if (currentPage === totalPages - 1) {
     nextBtn.disabled = true;
   } else {
-    // 点击按钮，切换到下一页
     nextBtn.addEventListener('click', () => {
       currentPage = currentPage + 1;
       renderChapterList();
     });
   }
   paginationDiv.appendChild(nextBtn);
-}
+  
+  // --- 跳转功能 ---
+  
+  const jumpContainer = document.createElement('span');
+  jumpContainer.style.marginLeft = '20px';
+  jumpContainer.style.fontSize = '14px';
+  jumpContainer.textContent = '跳转至: ';
+  
+  // 1. 输入框
+  const pageInput = document.createElement('input');
+  pageInput.type = 'number';
+  pageInput.min = 1;
+  pageInput.max = totalPages;
+  pageInput.value = displayCurrentPage;
+  pageInput.style.width = '40px';
+  pageInput.style.textAlign = 'center';
+  pageInput.style.padding = '3px';
+  pageInput.style.border = '1px solid #ccc';
+  pageInput.style.borderRadius = '3px';
+  pageInput.style.marginRight = '5px';
+  
+  // 2. 跳转按钮
+  const jumpBtn = document.createElement('button');
+  jumpBtn.textContent = 'Go';
+  jumpBtn.style.padding = '5px 8px';
+  jumpBtn.style.cursor = 'pointer';
+  
+  jumpBtn.addEventListener('click', () => {
+    const targetPage = parseInt(pageInput.value);
+    
+    if (targetPage >= 1 && targetPage <= totalPages) {
+      currentPage = targetPage - 1; 
+      renderChapterList();
+      window.scrollTo({top: 0, behavior: 'smooth'}); 
+    } else {
+      alert(`请输入一个有效的页码 (1 到 ${totalPages})。`);
+      pageInput.value = displayCurrentPage;
+    }
+  });
 
-// 【代码块 E：替换 loadChapter 函数，添加限制检查】
+  jumpContainer.appendChild(pageInput);
+  jumpContainer.appendChild(jumpBtn);
+  paginationDiv.appendChild(jumpContainer);
+}
 
 // 加载文章内容
 function loadChapter(index){
@@ -307,23 +375,19 @@ function loadChapter(index){
   const file = chapter.file;
   currentChapterIndex = index;
 
-  // --- 新增逻辑：检查限制级标记 ---
+  //检查限制级标记 
   let loadPromise;
-  
   if (chapter.restricted) {
     // 1. 如果是限制级，先显示警告弹窗
     loadPromise = showRestrictedWarning().then(() => {
         // 如果用户确认，再执行 fetch 读取文件
         return fetch(file);
     }).catch(() => {
-        // 如果用户取消，则停止操作，并返回一个不会继续执行的 Promise
         return Promise.reject('用户取消阅读限制级内容');
     });
   } else {
-    // 2. 如果非限制级，直接执行 fetch
     loadPromise = fetch(file);
   }
-  // --- 新增逻辑结束 ---
   
   loadPromise
     .then(res => res.text())
@@ -331,7 +395,6 @@ function loadChapter(index){
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
       
       const styledContent = paragraphs.map(p => {
-        // 针对每个段落添加样式 (保持您的美化代码)
         return `<p style="
           line-height: 1.8;
           font-size: 16px;
@@ -343,21 +406,19 @@ function loadChapter(index){
       }).join('');
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
-      
       // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
-
       // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
     })
     .catch(err => {
-        // 如果用户取消阅读，catch 块会捕获到 '用户取消阅读限制级内容'
         if (err !== '用户取消阅读限制级内容') {
              contentDiv.innerHTML = '加载失败：' + err;
         }
     });
 }
+  
 // 渲染底部导航栏
 function renderNavButtons(){
   const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
@@ -366,8 +427,6 @@ function renderNavButtons(){
   const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
   const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
   const currentTitle = chapters[currentChapterIndex].title || "";
-
-  // 优化：将标题最大宽度增加到 80px，留出更多空间显示文字
   const titleMaxWidth = '80px'; 
 
   return `
@@ -381,7 +440,7 @@ function renderNavButtons(){
       <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
         ${prevIndex !== null ? `
           <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-          max-width:${titleMaxWidth}; /* 应用新宽度 */
+          max-width:${titleMaxWidth}; 
           ">${prevTitle}</div>
           <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; 
           background:#fff;" onclick="loadChapter(${prevIndex})">上一篇</button>
@@ -396,7 +455,7 @@ function renderNavButtons(){
       <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
         ${nextIndex !== null ? `
           <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-          max-width:${titleMaxWidth}; /* 应用新宽度 */text-align:right;">${nextTitle}</div>
+          max-width:${titleMaxWidth}; text-align:right;">${nextTitle}</div>
           <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" 
           onclick="loadChapter(${nextIndex})">下一篇</button>
         ` : `<div style="height:32px;"></div>`}
@@ -405,6 +464,17 @@ function renderNavButtons(){
     </div>
   `;
 }
+
+// --- 搜索框事件监听器 ---
+if (chapterSearchInput) {
+    chapterSearchInput.addEventListener('input', () => {
+        // 当输入变化时，将页码重置为第一页，然后重新渲染列表
+        currentPage = 0; 
+        renderChapterList();
+    });
+}
+// -----------------------
+
 
 // 初始化
 renderChapterList();
