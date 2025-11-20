@@ -470,6 +470,8 @@ function renderPagination(){
 }
   
 // 加载文章内容
+// 请用这个函数替换您脚本中的整个 loadChapter 函数
+
 function loadChapter(index){
   const chapter = chapters[index];
   const file = chapter.file;
@@ -481,7 +483,6 @@ function loadChapter(index){
     loadPromise = showRestrictedWarning().then(() => {
         return fetch(file);
     }).catch(() => {
-        // 如果用户取消，则停止操作
         return Promise.reject('用户取消阅读限制级内容');
     });
   } else {
@@ -491,7 +492,7 @@ function loadChapter(index){
   loadPromise
     .then(res => res.text())
     .then(text => {
-      // 渲染内容... (保持您的内容样式化代码不变)
+      // ... (内容渲染代码保持不变) ...
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
       
       const styledContent = paragraphs.map(p => {
@@ -507,14 +508,11 @@ function loadChapter(index){
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
       
-      // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
-
-      // 标记为已读并刷新列表
       markChapterAsRead(index);
-      renderChapterList(); // 重新渲染列表以更新已读状态
+      renderChapterList();
       
-      // --- GA4 细致统计代码 ---
+      // --- GA4 统计代码 (保持不变) ---
       if (typeof gtag === 'function') {
           const chapterTitle = chapters[index].title;
           gtag('event', 'read_chapter', { 
@@ -524,14 +522,17 @@ function loadChapter(index){
           });
       }
 
-      // --- Valine 评论区重载 ---
-      if (typeof v !== 'undefined') {
-          const newPath = '/chapter/' + index; // 使用唯一的路径作为评论 ID
+      // ===================================
+      // 💥 增强的 Valine 评论区重载代码 💥
+      // 检查 v 实例是否存在且 setPath 方法可用
+      if (v && typeof v.setPath === 'function') { 
+          const newPath = '/chapter/' + index;
           v.setPath(newPath);
       }
+      // ===================================
 
     })
-    // 💥 修正的 .catch 块：捕获加载和解析中的所有错误 💥
+    // 捕获所有错误（加载、解析、以及上面的 Valine 逻辑中的错误）
     .catch(err => { 
         if (err !== '用户取消阅读限制级内容') {
              // 仅在非用户取消的情况下显示错误信息
