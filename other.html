@@ -166,14 +166,6 @@ const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 const DISQUS_SHORTNAME = 'wanger9427';  // 【Disqus 配置变量】 必要时删除
 
-  // 【Disqus 通用加载器】请放在这里 
-
-(function() { 
-    var d = document, s = d.createElement('script');
-    s.src = 'https://' + DISQUS_SHORTNAME + '.disqus.com/embed.js'; 
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
-})();
   
 // 限制级提示弹窗
 /**
@@ -515,6 +507,14 @@ if (chapterSearchInput) {
 }
 // -----------------------
 
+  
+// 【Disqus 通用加载器】请放在这里 
+(function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://' + DISQUS_SHORTNAME + '.disqus.com/embed.js'; 
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+})();
 
 // 初始化
 renderChapterList();
