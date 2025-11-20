@@ -34,45 +34,51 @@ gtag('config', 'G-SWT6TGR3EB');
   #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
   #content p { margin-bottom:16px; }
 
-  /* =================================================== */
-/* Valine 评论区 样式定制：简洁风格 */
+/* =================================================== */
+/* Valine 评论区 样式定制：简洁 + 只留昵称 */
 /* =================================================== */
 
 /* 1. 评论区主容器：与内容分隔 */
 #vcomments {
-    padding-top: 40px; /* 增加与章节内容的分隔距离 */
+    padding-top: 40px; 
     padding-bottom: 20px;
-    border-top: 1px solid #eee; /* 顶部添加一条细分隔线 */
+    border-top: 1px solid #eee; 
     margin-top: 40px;
 }
 
-/* 2. 输入区域 - 移除阴影和多余边框 */
-/* 评论者信息输入框 (昵称、邮箱、网址) */
-#vcomments .vinput {
-    border: 1px solid #ddd;
-    box-shadow: none !important; /* 移除所有阴影 */
-    border-radius: 4px;
-    padding: 8px 10px;
-    transition: border-color 0.3s;
+/* 2. 💥 隐藏邮箱和网址输入框 💥 */
+#vcomments .vheader .vinput-group:nth-child(2), /* 邮箱 */
+#vcomments .vheader .vinput-group:nth-child(3) { /* 网址 */
+    display: none !important; 
 }
 
-/* 评论内容输入框 */
+/* 调整昵称输入框，使其占据整行宽度 */
+#vcomments .vheader .vinput-group:nth-child(1) {
+    width: 100% !important; 
+    margin-right: 0 !important;
+}
+
+/* 3. 输入区域 - 简洁化 */
+#vcomments .vinput,
 #vcomments .veditor {
     border: 1px solid #ddd;
     box-shadow: none !important;
     border-radius: 4px;
+    padding: 8px 10px;
+    transition: border-color 0.3s;
+}
+#vcomments .veditor {
     padding: 10px;
-    resize: vertical; /* 允许垂直调整大小 */
+    resize: vertical;
     min-height: 120px;
 }
 #vcomments .vinput:focus,
 #vcomments .veditor:focus {
-    border-color: #1a73e8; /* 获得焦点时使用您的主题色 */
+    border-color: #1a73e8; 
 }
 
-/* 3. 提交按钮 - 统一主题色 */
+/* 4. 提交按钮 - 主题色 */
 #vcomments .vbtn {
-    /* 使用您的蓝色主题色 */
     background-color: #1a73e8; 
     color: #fff;
     border: none;
@@ -80,50 +86,38 @@ gtag('config', 'G-SWT6TGR3EB');
     padding: 10px 20px;
     font-size: 14px;
     cursor: pointer;
-    box-shadow: none; /* 移除阴影 */
+    box-shadow: none;
     transition: background-color 0.3s;
 }
 #vcomments .vbtn:hover {
-    background-color: #155bb5; /* 悬停时颜色略深 */
+    background-color: #155bb5;
 }
 
-/* 4. 评论列表 - 简洁分隔 */
+/* 5. 评论列表 - 简洁分隔 */
 #vcomments .vcard {
-    border-bottom: 1px dashed #eee; /* 评论间使用虚线分隔，比实线更轻量 */
+    border-bottom: 1px dashed #eee;
     padding: 15px 0 15px 0;
     margin-bottom: 0;
 }
 #vcomments .vcard:last-child {
-    border-bottom: none; /* 列表最后一个评论不显示底部分隔线 */
+    border-bottom: none;
 }
 
-/* 5. 评论内容和元信息 */
-#vcomments .vcard .vcontent {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #333;
-    padding-top: 5px;
-}
-
-/* 评论者昵称 - 使用主题色并加粗 */
+/* 6. 评论者昵称 */
 #vcomments .vhead .vnick {
     font-weight: bold;
-    color: #1a73e8; /* 使用主题色 */
-    text-decoration: none; /* 确保链接没有下划线 */
+    color: #1a73e8; 
+    text-decoration: none; 
 }
 #vcomments .vhead .vnick:hover {
-    text-decoration: underline; /* 鼠标悬停时显示下划线 */
+    text-decoration: underline; 
 }
 
-/* 评论时间/回复等信息 */
+/* 7. 元信息 */
 #vcomments .vmeta {
     font-size: 12px;
     color: #999;
 }
-
-/* 6. Valine 版权信息 - 可选隐藏 */
-/* 如果您不希望显示 Valine 的 Powered By 链接，可以使用此规则 */
-/* #vcomments .vpower { display: none; } */
   
 </style>
 
@@ -259,6 +253,7 @@ let currentChapterIndex = 0;
 // 【Valine 配置变量】
 const VALINE_APP_ID = 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz';   
 const VALINE_APP_KEY = 'HHoRxeRtDd7bJUTrkPo6RlgS';  
+let v; // 将 Valine 全局实例变量
   
 // 限制级提示弹窗
 /**
@@ -470,8 +465,6 @@ function renderPagination(){
 }
   
 // 加载文章内容
-// 请用这个函数替换您脚本中的整个 loadChapter 函数
-
 function loadChapter(index){
   const chapter = chapters[index];
   const file = chapter.file;
@@ -611,19 +604,19 @@ if (chapterSearchInput) {
     (d.head || d.body).appendChild(s);
 })();
 
-let v; // 定义一个全局变量来存储 Valine 实例
-
 function initValine(identifier) {
     // 初始化 Valine
     v = new Valine({
         el: '#vcomments',
         appId: VALINE_APP_ID,
         appKey: VALINE_APP_KEY,
-        notify: false, // 建议关闭邮件通知，节省免费额度
-        verify: false, // 默认不开启验证码
-        avatar: 'mp', // 默认头像样式
-        placeholder: '欢迎留下您的评论 (昵称、邮箱为必填项)',
-        path: identifier // Valine 将使用此路径作为评论的主题 ID
+        notify: false, 
+        verify: false, 
+        avatar: 'mp', 
+        placeholder: '欢迎留下您的评论 ', 
+        path: identifier,
+        // 💥 新增配置：只要求昵称 💥
+        requiredFields: ['nick'] 
     });
 }
 // 【Valine 评论系统加载器】↑----------
