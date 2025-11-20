@@ -227,7 +227,7 @@ gtag('config', 'G-SWT6TGR3EB');
   <div id="pagination"></div>
   <div id="content">点击标题开始阅读</div>
   <!-- Valine 评论区挂载点 -->
-  <div id="vcomments" style="margin-top:40px;"></div>
+  <div id="vcomments" style="margin-top:40px;display: none"></div>
 
 </main>
 
@@ -591,9 +591,9 @@ renderChapterList();
  * 每次加载新文章时调用一次，Valine 会基于 path 展示/存储该文章的评论
  */
 function loadValine(path) {
-  // 清空原有评论区（防止重复）
   const container = document.getElementById('vcomments');
-  container.innerHTML = '';
+   container.style.display = 'block';  //显示评论区
+  container.innerHTML = '';  // 清空原有评论区（防止重复）
 
 new Valine({
   el: '#vcomments',
