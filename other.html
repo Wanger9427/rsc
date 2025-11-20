@@ -33,89 +33,6 @@ gtag('config', 'G-SWT6TGR3EB');
   /* 内容框 */
   #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
   #content p { margin-bottom:16px; }
-
-/* Valine评论区样式：简洁 + 只留昵称 */
-/* 1. 评论区主容器：与内容分隔 */
-#vcomments {
-    padding-top: 40px; 
-    padding-bottom: 20px;
-    border-top: 1px solid #eee; 
-    margin-top: 40px;
-}
-
-/* 2. 隐藏邮箱和网址输入框  */
-#vcomments .vheader .vinput-group:nth-child(2), /* 邮箱 */
-#vcomments .vheader .vinput-group:nth-child(3) { /* 网址 */
-    display: none !important; 
-}
-
-/* 调整昵称输入框，使其占据整行宽度 */
-#vcomments .vheader .vinput-group:nth-child(1) {
-    width: 100% !important; 
-    margin-right: 0 !important;
-}
-
-/* 3. 输入区域 - 简洁化 */
-#vcomments .vinput,
-#vcomments .veditor {
-    border: 1px solid #ddd;
-    box-shadow: none !important;
-    border-radius: 4px;
-    padding: 8px 10px;
-    transition: border-color 0.3s;
-}
-#vcomments .veditor {
-    padding: 10px;
-    resize: vertical;
-    min-height: 120px;
-}
-#vcomments .vinput:focus,
-#vcomments .veditor:focus {
-    border-color: #1a73e8; 
-}
-
-/* 4. 提交按钮 - 主题色 */
-#vcomments .vbtn {
-    background-color: #1a73e8; 
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow: none;
-    transition: background-color 0.3s;
-}
-#vcomments .vbtn:hover {
-    background-color: #155bb5;
-}
-
-/* 5. 评论列表 - 简洁分隔 */
-#vcomments .vcard {
-    border-bottom: 1px dashed #eee;
-    padding: 15px 0 15px 0;
-    margin-bottom: 0;
-}
-#vcomments .vcard:last-child {
-    border-bottom: none;
-}
-
-/* 6. 评论者昵称 */
-#vcomments .vhead .vnick {
-    font-weight: bold;
-    color: #1a73e8; 
-    text-decoration: none; 
-}
-#vcomments .vhead .vnick:hover {
-    text-decoration: underline; 
-}
-
-/* 7. 元信息 */
-#vcomments .vmeta {
-    font-size: 12px;
-    color: #999;
-}
-  
 </style>
 
 </head>
@@ -232,7 +149,7 @@ gtag('config', 'G-SWT6TGR3EB');
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
   <div id="content">点击标题开始阅读</div>
-  <div id="vcomments"></div> //评论区
+  <div id="disqus_thread"></div>
 </main>
 
 <script>
@@ -247,11 +164,7 @@ const chapterList = document.getElementById('chapterList');
 const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
-// 【Valine 配置变量】
-const VALINE_APP_ID = 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz';   
-const VALINE_APP_KEY = 'HHoRxeRtDd7bJUTrkPo6RlgS';  
-let v; // 将 Valine 全局实例变量
-  
+
 // 限制级提示弹窗
 /**
  * 弹出限制级内容警告，并返回一个 Promise。
@@ -463,11 +376,11 @@ function renderPagination(){
   
 // 加载文章内容
 function loadChapter(index){
-  const chapter = chapters[index];
+  const chapter = chapters[index]; // 获取当前章节对象
   const file = chapter.file;
   currentChapterIndex = index;
 
-  // --- 限制级检查逻辑 ---
+  // --- 限制级检查逻辑 (保持不变) ---
   let loadPromise;
   if (chapter.restricted) {
     loadPromise = showRestrictedWarning().then(() => {
@@ -478,11 +391,13 @@ function loadChapter(index){
   } else {
     loadPromise = fetch(file);
   }
+  // ----------------------------------
   
   loadPromise
     .then(res => res.text())
     .then(text => {
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
+      
       const styledContent = paragraphs.map(p => {
         return `<p style="
           line-height: 1.8;
@@ -493,35 +408,33 @@ function loadChapter(index){
           font-family: 'Microsoft YaHei', sans-serif;
         ">${p}</p>`;
       }).join('');
+      
       contentDiv.innerHTML = styledContent + renderNavButtons();
+      
+      // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
+
+      // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
       
-      // --- GA4 统计代码 (保持不变) ---
+      // ===================================
+      // 💥 GA4 细致统计代码 💥
+      // 检查 gtag 函数是否可用 (即 GA 代码是否已加载)
       if (typeof gtag === 'function') {
           const chapterTitle = chapters[index].title;
-          gtag('event', 'read_chapter', { 
-              'chapter_title': chapterTitle, 
-              'chapter_index': index,        
-              'event_category': 'Novel_Read'
+          
+          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
+              'chapter_title': chapterTitle, // 附加章节标题参数
+              'chapter_index': index,        // 附加章节索引参数
+              'event_category': 'Novel_Read' // 可选：添加分类
           });
-      }
-
-      // ===================================
-      // 💥 修正后的 Valine 评论区重载代码 💥
-      // 检查 v 实例是否存在
-      if (v) { 
-          const newPath = '/chapter/' + index;
-          v.setPath(newPath);
       }
       // ===================================
 
     })
-    // 捕获所有错误（加载、解析、以及上面的 Valine 逻辑中的错误）
-    .catch(err => { 
+    .catch(err => {
         if (err !== '用户取消阅读限制级内容') {
-             // 仅在非用户取消的情况下显示错误信息
              contentDiv.innerHTML = '加载失败：' + err;
         }
     });
@@ -581,39 +494,8 @@ if (chapterSearchInput) {
         renderChapterList();
     });
 }
+// -----------------------
 
-
-// 【Valine 评论系统加载器】↓----------
-(function() { 
-    // 1. 引入 Valine 库文件
-    var d = document, s = d.createElement('script');
-    s.src = 'https://unpkg.com/valine/dist/Valine.min.js'; // 官方 CDN
-    
-    s.onload = function() {
-        // 2. 初始化 Valine (页面加载时只需要初始化一次)
-        // 首次加载时，根据当前章节索引来初始化 Valine
-        initValine('/chapter/' + currentChapterIndex); 
-    };
-    (d.head || d.body).appendChild(s);
-})();
-
-// 请确保 let v; 在此之前被定义
-
-function initValine(identifier) {
-    // 初始化 Valine
-    v = new Valine({
-        el: '#vcomments',
-        appId: VALINE_APP_ID,
-        appKey: VALINE_APP_KEY,
-        notify: false, 
-        verify: false, 
-        avatar: 'mp', 
-        placeholder: '欢迎留下您的评论 (只需昵称)', 
-        path: identifier,
-        requiredFields: ['nick'] 
-    });
-}
-// 【Valine 评论系统加载器】↑----------
 
 // 初始化
 renderChapterList();
