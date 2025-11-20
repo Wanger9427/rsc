@@ -268,28 +268,37 @@ function renderChapterList(){
     renderPagination(); // 调用分页函数
 }  
 
-// 渲染分页按钮 (已修改以支持搜索后的 filteredChapters)
+// 渲染分页按钮
 function renderPagination(){
   paginationDiv.innerHTML = "";
   
-  // 1. 计算总页数 (基于过滤后的列表)
-  const totalChapters = filteredChapters.length; 
+  // 1. 计算总页数
+  const totalChapters = filteredChapters.length;
   const totalPages = Math.ceil(totalChapters / PAGE_SIZE);
 
-  // 如果总页数小于等于 1，则不显示分页控件
   if (totalPages <= 1) {
+    paginationDiv.style.padding = '0';
     return;
   }
-
+    
   // 当前页码（从 1 开始计数）
   const displayCurrentPage = currentPage + 1;
-
+  
+  // --- 通用样式 ---
+  const buttonStyle = 'padding: 5px 10px; margin: 0 5px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 14px;';
+  
+  // ===================================================
+  // --- 第一行容器：核心导航 (上一页 / 页码 / 下一页) ---
+  const topRow = document.createElement('div');
+  topRow.style.display = 'flex';
+  topRow.style.justifyContent = 'center'; // 居中显示
+  topRow.style.alignItems = 'center';
+  topRow.style.padding = '10px 0'; // 顶部和底部的内边距
+  
   // --- 创建【上一页】按钮 ---
   const prevBtn = document.createElement('button');
   prevBtn.textContent = '上一页';
-  prevBtn.style.padding = '5px 10px'; 
-  prevBtn.style.marginRight = '5px';
-  prevBtn.style.cursor = 'pointer';
+  prevBtn.style.cssText = buttonStyle;
   
   if (currentPage === 0) {
     prevBtn.disabled = true;
@@ -299,21 +308,19 @@ function renderPagination(){
       renderChapterList();
     });
   }
-  paginationDiv.appendChild(prevBtn);
+  topRow.appendChild(prevBtn);
 
   // --- 显示页码信息 ---
   const pageInfo = document.createElement('span');
   pageInfo.textContent = ` (${displayCurrentPage} / ${totalPages}) `;
   pageInfo.style.margin = '0 10px'; 
   pageInfo.style.fontSize = '14px';
-  paginationDiv.appendChild(pageInfo);
+  topRow.appendChild(pageInfo);
 
   // --- 创建【下一页】按钮 ---
   const nextBtn = document.createElement('button');
   nextBtn.textContent = '下一页';
-  nextBtn.style.padding = '5px 10px'; 
-  nextBtn.style.marginLeft = '5px';
-  nextBtn.style.cursor = 'pointer';
+  nextBtn.style.cssText = buttonStyle;
 
   if (currentPage === totalPages - 1) {
     nextBtn.disabled = true;
@@ -323,12 +330,19 @@ function renderPagination(){
       renderChapterList();
     });
   }
-  paginationDiv.appendChild(nextBtn);
+  topRow.appendChild(nextBtn);
   
-  // --- 跳转功能 ---
+  // 将第一行添加到主容器
+  paginationDiv.appendChild(topRow);
   
+  // --- 第二行容器：跳转功能 ---
+  const bottomRow = document.createElement('div');
+  bottomRow.style.display = 'flex';
+  bottomRow.style.justifyContent = 'center'; 
+  bottomRow.style.alignItems = 'center';
+  bottomRow.style.paddingBottom = '15px'; 
+
   const jumpContainer = document.createElement('span');
-  jumpContainer.style.marginLeft = '20px';
   jumpContainer.style.fontSize = '14px';
   jumpContainer.textContent = '跳转至: ';
   
@@ -338,19 +352,14 @@ function renderPagination(){
   pageInput.min = 1;
   pageInput.max = totalPages;
   pageInput.value = displayCurrentPage;
-  pageInput.style.width = '40px';
-  pageInput.style.textAlign = 'center';
-  pageInput.style.padding = '3px';
-  pageInput.style.border = '1px solid #ccc';
-  pageInput.style.borderRadius = '3px';
-  pageInput.style.marginRight = '5px';
+  pageInput.style.cssText = 'width: 40px; text-align: center; padding: 3px; border: 1px solid #ccc; border-radius: 3px; margin-right: 5px; font-size: 14px;';
   
   // 2. 跳转按钮
   const jumpBtn = document.createElement('button');
   jumpBtn.textContent = 'Go';
-  jumpBtn.style.padding = '5px 8px';
-  jumpBtn.style.cursor = 'pointer';
-  
+  jumpBtn.style.cssText = buttonStyle;
+  jumpBtn.style.margin = '0'; 
+
   jumpBtn.addEventListener('click', () => {
     const targetPage = parseInt(pageInput.value);
     
@@ -366,9 +375,12 @@ function renderPagination(){
 
   jumpContainer.appendChild(pageInput);
   jumpContainer.appendChild(jumpBtn);
-  paginationDiv.appendChild(jumpContainer);
+  
+  bottomRow.appendChild(jumpContainer);
+  // 将第二行添加到主容器
+  paginationDiv.appendChild(bottomRow);
 }
-
+  
 // 加载文章内容
 function loadChapter(index){
   const chapter = chapters[index]; // 获取当前章节对象
