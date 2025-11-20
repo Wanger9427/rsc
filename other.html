@@ -164,8 +164,9 @@ const chapterList = document.getElementById('chapterList');
 const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
-const DISQUS_SHORTNAME = 'wanger9427';  // 【Disqus 配置变量】 必要时删除
-
+// 【Valine 配置变量】
+const VALINE_APP_ID = 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz';   
+const VALINE_APP_KEY = 'HHoRxeRtDd7bJUTrkPo6RlgS';  
   
 // 限制级提示弹窗
 /**
@@ -378,25 +379,28 @@ function renderPagination(){
   
 // 加载文章内容
 function loadChapter(index){
-  const chapter = chapters[index];
+  const chapter = chapters[index]; // 获取当前章节对象
   const file = chapter.file;
   currentChapterIndex = index;
-  // --- 限制级检查逻辑 ---
+
+  // --- 限制级检查逻辑 (保持不变) ---
   let loadPromise;
   if (chapter.restricted) {
     loadPromise = showRestrictedWarning().then(() => {
         return fetch(file);
-    }).catch(() => {// 如果用户取消阅读，停止加载
+    }).catch(() => {
         return Promise.reject('用户取消阅读限制级内容');
     });
   } else {
     loadPromise = fetch(file);
   }
+  // ----------------------------------
   
   loadPromise
     .then(res => res.text())
     .then(text => {
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
+      
       const styledContent = paragraphs.map(p => {
         return `<p style="
           line-height: 1.8;
@@ -407,6 +411,7 @@ function loadChapter(index){
           font-family: 'Microsoft YaHei', sans-serif;
         ">${p}</p>`;
       }).join('');
+      
       contentDiv.innerHTML = styledContent + renderNavButtons();
       
       // 滚动到内容顶部
@@ -415,33 +420,28 @@ function loadChapter(index){
       // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
-      
-      // --- GA4 细致统计代码 ---
+
+      //  GA4 细致统计代码 
       if (typeof gtag === 'function') {
           const chapterTitle = chapters[index].title;
-          gtag('event', 'read_chapter', { 
-              'chapter_title': chapterTitle, 
-              'chapter_index': index,        
-              'event_category': 'Novel_Read'
+          
+          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
+              'chapter_title': chapterTitle, // 附加章节标题参数
+              'chapter_index': index,        // 附加章节索引参数
+              'event_category': 'Novel_Read' // 可选：添加分类
           });
       }
 
-      // 重载 Disqus 评论区 
-      // 检查 DISQUS 是否已加载
-      if (typeof DISQUS !== 'undefined') {
-          DISQUS.reset({
-              reload: true,
-              config: function () {
-                  // 1. 设置 Disqus 唯一标识符：使用原始索引作为唯一ID
-                  this.page.identifier = 'chapter-' + index; 
-                  // 2. 设置 Disqus 评论标题
-                  this.page.title = chapters[index].title; 
-                  // 3. 设置评论区的 URL (重要，用于分享和链接)
-                  // 建议使用一个基于章节ID的虚拟URL
-                  this.page.url = window.location.href.split('#')[0] + '#/chapter/' + index;
-              }
-          });
+      //  重载 Valine 评论区 
+      if (typeof v !== 'undefined') {
+          // Valine 通过 setPath 方法切换评论主题
+          const newPath = '/chapter/' + index; // 使用一个唯一的路径作为评论 ID
+          v.setPath(newPath);
       }
+
+    })
+    .catch(err => { /* ... */ });
+}
 
     })
     .catch(err => {
@@ -505,16 +505,38 @@ if (chapterSearchInput) {
         renderChapterList();
     });
 }
-// -----------------------
 
-  
-// 【Disqus 通用加载器】请放在这里 
+
+// 【Valine 评论系统加载器】↓----------
 (function() { 
+    // 1. 引入 Valine 库文件
     var d = document, s = d.createElement('script');
-    s.src = 'https://' + DISQUS_SHORTNAME + '.disqus.com/embed.js'; 
-    s.setAttribute('data-timestamp', +new Date());
+    s.src = 'https://unpkg.com/valine/dist/Valine.min.js'; // 官方 CDN
+    
+    s.onload = function() {
+        // 2. 初始化 Valine (页面加载时只需要初始化一次)
+        // 初始时使用 'home' 作为路径，避免在未点击章节时加载评论
+        initValine('home'); 
+    };
     (d.head || d.body).appendChild(s);
 })();
+
+let v; // 定义一个全局变量来存储 Valine 实例
+
+function initValine(identifier) {
+    // 初始化 Valine
+    v = new Valine({
+        el: '#vcomments',
+        appId: VALINE_APP_ID,
+        appKey: VALINE_APP_KEY,
+        notify: false, // 建议关闭邮件通知，节省免费额度
+        verify: false, // 默认不开启验证码
+        avatar: 'mp', // 默认头像样式
+        placeholder: '欢迎留下您的评论 (昵称、邮箱为必填项)',
+        path: identifier // Valine 将使用此路径作为评论的主题 ID
+    });
+}
+// 【Valine 评论系统加载器】↑----------
 
 // 初始化
 renderChapterList();
