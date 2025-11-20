@@ -44,6 +44,14 @@ gtag('config', 'G-SWT6TGR3EB');
   border: 1px solid #1F1F1F; /* 深色边框 */
 }
 
+  /* 显示时间 */
+  .vl-time {
+  display: inline-block;
+  font-size: 12px;
+  color: #555;
+  margin-left: 8px;
+}
+
 /* 评论列表单条 */
 .vl-comment {
   background-color: #fff;      /* 评论背景白色 */
@@ -599,7 +607,7 @@ new Valine({
   el: '#vcomments',
   appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  // 替换成你的 AppId
   appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',           // 替换成你的 AppKey
-  path: 'test-article',                        // 用作唯一标识
+  path:path,                        // 用作唯一标识
   placeholder: '请输入昵称，欢迎留言评论！爱您！',
   visitor: true,        // 显示访客数
   avatar: 'hide',       // 隐藏头像
