@@ -33,6 +33,98 @@ gtag('config', 'G-SWT6TGR3EB');
   /* 内容框 */
   #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
   #content p { margin-bottom:16px; }
+
+  /* =================================================== */
+/* Valine 评论区 样式定制：简洁风格 */
+/* =================================================== */
+
+/* 1. 评论区主容器：与内容分隔 */
+#vcomments {
+    padding-top: 40px; /* 增加与章节内容的分隔距离 */
+    padding-bottom: 20px;
+    border-top: 1px solid #eee; /* 顶部添加一条细分隔线 */
+    margin-top: 40px;
+}
+
+/* 2. 输入区域 - 移除阴影和多余边框 */
+/* 评论者信息输入框 (昵称、邮箱、网址) */
+#vcomments .vinput {
+    border: 1px solid #ddd;
+    box-shadow: none !important; /* 移除所有阴影 */
+    border-radius: 4px;
+    padding: 8px 10px;
+    transition: border-color 0.3s;
+}
+
+/* 评论内容输入框 */
+#vcomments .veditor {
+    border: 1px solid #ddd;
+    box-shadow: none !important;
+    border-radius: 4px;
+    padding: 10px;
+    resize: vertical; /* 允许垂直调整大小 */
+    min-height: 120px;
+}
+#vcomments .vinput:focus,
+#vcomments .veditor:focus {
+    border-color: #1a73e8; /* 获得焦点时使用您的主题色 */
+}
+
+/* 3. 提交按钮 - 统一主题色 */
+#vcomments .vbtn {
+    /* 使用您的蓝色主题色 */
+    background-color: #1a73e8; 
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: none; /* 移除阴影 */
+    transition: background-color 0.3s;
+}
+#vcomments .vbtn:hover {
+    background-color: #155bb5; /* 悬停时颜色略深 */
+}
+
+/* 4. 评论列表 - 简洁分隔 */
+#vcomments .vcard {
+    border-bottom: 1px dashed #eee; /* 评论间使用虚线分隔，比实线更轻量 */
+    padding: 15px 0 15px 0;
+    margin-bottom: 0;
+}
+#vcomments .vcard:last-child {
+    border-bottom: none; /* 列表最后一个评论不显示底部分隔线 */
+}
+
+/* 5. 评论内容和元信息 */
+#vcomments .vcard .vcontent {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+    padding-top: 5px;
+}
+
+/* 评论者昵称 - 使用主题色并加粗 */
+#vcomments .vhead .vnick {
+    font-weight: bold;
+    color: #1a73e8; /* 使用主题色 */
+    text-decoration: none; /* 确保链接没有下划线 */
+}
+#vcomments .vhead .vnick:hover {
+    text-decoration: underline; /* 鼠标悬停时显示下划线 */
+}
+
+/* 评论时间/回复等信息 */
+#vcomments .vmeta {
+    font-size: 12px;
+    color: #999;
+}
+
+/* 6. Valine 版权信息 - 可选隐藏 */
+/* 如果您不希望显示 Valine 的 Powered By 链接，可以使用此规则 */
+/* #vcomments .vpower { display: none; } */
+  
 </style>
 
 </head>
@@ -149,7 +241,7 @@ gtag('config', 'G-SWT6TGR3EB');
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
   <div id="content">点击标题开始阅读</div>
-  <div id="disqus_thread"></div>
+  <div id="vcomments"></div> //评论区
 </main>
 
 <script>
@@ -379,26 +471,27 @@ function renderPagination(){
   
 // 加载文章内容
 function loadChapter(index){
-  const chapter = chapters[index]; // 获取当前章节对象
+  const chapter = chapters[index];
   const file = chapter.file;
   currentChapterIndex = index;
 
-  // --- 限制级检查逻辑 (保持不变) ---
+  // --- 限制级检查逻辑 ---
   let loadPromise;
   if (chapter.restricted) {
     loadPromise = showRestrictedWarning().then(() => {
         return fetch(file);
     }).catch(() => {
+        // 如果用户取消，则停止操作
         return Promise.reject('用户取消阅读限制级内容');
     });
   } else {
     loadPromise = fetch(file);
   }
-  // ----------------------------------
   
   loadPromise
     .then(res => res.text())
     .then(text => {
+      // 渲染内容... (保持您的内容样式化代码不变)
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
       
       const styledContent = paragraphs.map(p => {
@@ -419,33 +512,29 @@ function loadChapter(index){
 
       // 标记为已读并刷新列表
       markChapterAsRead(index);
-      renderChapterList();
-
-      //  GA4 细致统计代码 
+      renderChapterList(); // 重新渲染列表以更新已读状态
+      
+      // --- GA4 细致统计代码 ---
       if (typeof gtag === 'function') {
           const chapterTitle = chapters[index].title;
-          
-          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
-              'chapter_title': chapterTitle, // 附加章节标题参数
-              'chapter_index': index,        // 附加章节索引参数
-              'event_category': 'Novel_Read' // 可选：添加分类
+          gtag('event', 'read_chapter', { 
+              'chapter_title': chapterTitle, 
+              'chapter_index': index,        
+              'event_category': 'Novel_Read'
           });
       }
 
-      //  重载 Valine 评论区 
+      // --- Valine 评论区重载 ---
       if (typeof v !== 'undefined') {
-          // Valine 通过 setPath 方法切换评论主题
-          const newPath = '/chapter/' + index; // 使用一个唯一的路径作为评论 ID
+          const newPath = '/chapter/' + index; // 使用唯一的路径作为评论 ID
           v.setPath(newPath);
       }
 
     })
-    .catch(err => { /* ... */ });
-}
-
-    })
-    .catch(err => {
+    // 💥 修正的 .catch 块：捕获加载和解析中的所有错误 💥
+    .catch(err => { 
         if (err !== '用户取消阅读限制级内容') {
+             // 仅在非用户取消的情况下显示错误信息
              contentDiv.innerHTML = '加载失败：' + err;
         }
     });
