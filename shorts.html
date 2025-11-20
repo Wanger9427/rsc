@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SWT6TGR3EB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SWT6TGR3EB');
+</script>
   <meta charset="UTF-8">
   <title>【袁成】短篇文</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -403,12 +412,10 @@ function loadChapter(index){
   const file = chapter.file;
   currentChapterIndex = index;
 
-  //检查限制级标记 
+  // --- 限制级检查逻辑 (保持不变) ---
   let loadPromise;
   if (chapter.restricted) {
-    // 1. 如果是限制级，先显示警告弹窗
     loadPromise = showRestrictedWarning().then(() => {
-        // 如果用户确认，再执行 fetch 读取文件
         return fetch(file);
     }).catch(() => {
         return Promise.reject('用户取消阅读限制级内容');
@@ -416,6 +423,7 @@ function loadChapter(index){
   } else {
     loadPromise = fetch(file);
   }
+  // ----------------------------------
   
   loadPromise
     .then(res => res.text())
@@ -434,11 +442,28 @@ function loadChapter(index){
       }).join('');
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
+      
       // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
+
       // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
+      
+      // ===================================
+      // 💥 GA4 细致统计代码 💥
+      // 检查 gtag 函数是否可用 (即 GA 代码是否已加载)
+      if (typeof gtag === 'function') {
+          const chapterTitle = chapters[index].title;
+          
+          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
+              'chapter_title': chapterTitle, // 附加章节标题参数
+              'chapter_index': index,        // 附加章节索引参数
+              'event_category': 'Novel_Read' // 可选：添加分类
+          });
+      }
+      // ===================================
+
     })
     .catch(err => {
         if (err !== '用户取消阅读限制级内容') {
