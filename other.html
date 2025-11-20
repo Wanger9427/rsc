@@ -482,9 +482,7 @@ function loadChapter(index){
   loadPromise
     .then(res => res.text())
     .then(text => {
-      // ... (内容渲染代码保持不变) ...
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
-      
       const styledContent = paragraphs.map(p => {
         return `<p style="
           line-height: 1.8;
@@ -495,9 +493,7 @@ function loadChapter(index){
           font-family: 'Microsoft YaHei', sans-serif;
         ">${p}</p>`;
       }).join('');
-      
       contentDiv.innerHTML = styledContent + renderNavButtons();
-      
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
       markChapterAsRead(index);
       renderChapterList();
@@ -513,9 +509,9 @@ function loadChapter(index){
       }
 
       // ===================================
-      // 💥 增强的 Valine 评论区重载代码 💥
-      // 检查 v 实例是否存在且 setPath 方法可用
-      if (v && typeof v.setPath === 'function') { 
+      // 💥 修正后的 Valine 评论区重载代码 💥
+      // 检查 v 实例是否存在
+      if (v) { 
           const newPath = '/chapter/' + index;
           v.setPath(newPath);
       }
@@ -595,11 +591,13 @@ if (chapterSearchInput) {
     
     s.onload = function() {
         // 2. 初始化 Valine (页面加载时只需要初始化一次)
-        // 初始时使用 'home' 作为路径，避免在未点击章节时加载评论
-        initValine('home'); 
+        // 首次加载时，根据当前章节索引来初始化 Valine
+        initValine('/chapter/' + currentChapterIndex); 
     };
     (d.head || d.body).appendChild(s);
 })();
+
+// 请确保 let v; 在此之前被定义
 
 function initValine(identifier) {
     // 初始化 Valine
@@ -610,9 +608,8 @@ function initValine(identifier) {
         notify: false, 
         verify: false, 
         avatar: 'mp', 
-        placeholder: '欢迎留下您的评论 ', 
+        placeholder: '欢迎留下您的评论 (只需昵称)', 
         path: identifier,
-        // 💥 新增配置：只要求昵称 💥
         requiredFields: ['nick'] 
     });
 }
