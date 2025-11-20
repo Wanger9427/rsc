@@ -149,6 +149,7 @@ gtag('config', 'G-SWT6TGR3EB');
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
   <div id="content">点击标题开始阅读</div>
+  <div id="disqus_thread"></div>
 </main>
 
 <script>
@@ -163,7 +164,17 @@ const chapterList = document.getElementById('chapterList');
 const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
+const DISQUS_SHORTNAME = 'wanger9427';  // 【Disqus 配置变量】 必要时删除
 
+  // 【Disqus 通用加载器】请放在这里 
+
+(function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://' + DISQUS_SHORTNAME + '.disqus.com/embed.js'; 
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+})();
+  
 // 限制级提示弹窗
 /**
  * 弹出限制级内容警告，并返回一个 Promise。
@@ -375,28 +386,25 @@ function renderPagination(){
   
 // 加载文章内容
 function loadChapter(index){
-  const chapter = chapters[index]; // 获取当前章节对象
+  const chapter = chapters[index];
   const file = chapter.file;
   currentChapterIndex = index;
-
-  // --- 限制级检查逻辑 (保持不变) ---
+  // --- 限制级检查逻辑 ---
   let loadPromise;
   if (chapter.restricted) {
     loadPromise = showRestrictedWarning().then(() => {
         return fetch(file);
-    }).catch(() => {
+    }).catch(() => {// 如果用户取消阅读，停止加载
         return Promise.reject('用户取消阅读限制级内容');
     });
   } else {
     loadPromise = fetch(file);
   }
-  // ----------------------------------
   
   loadPromise
     .then(res => res.text())
     .then(text => {
       const paragraphs = text.split('\n').filter(line=>line.trim()!=='');
-      
       const styledContent = paragraphs.map(p => {
         return `<p style="
           line-height: 1.8;
@@ -407,7 +415,6 @@ function loadChapter(index){
           font-family: 'Microsoft YaHei', sans-serif;
         ">${p}</p>`;
       }).join('');
-      
       contentDiv.innerHTML = styledContent + renderNavButtons();
       
       // 滚动到内容顶部
@@ -417,19 +424,32 @@ function loadChapter(index){
       markChapterAsRead(index);
       renderChapterList();
       
-      // ===================================
-      // 💥 GA4 细致统计代码 💥
-      // 检查 gtag 函数是否可用 (即 GA 代码是否已加载)
+      // --- GA4 细致统计代码 ---
       if (typeof gtag === 'function') {
           const chapterTitle = chapters[index].title;
-          
-          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
-              'chapter_title': chapterTitle, // 附加章节标题参数
-              'chapter_index': index,        // 附加章节索引参数
-              'event_category': 'Novel_Read' // 可选：添加分类
+          gtag('event', 'read_chapter', { 
+              'chapter_title': chapterTitle, 
+              'chapter_index': index,        
+              'event_category': 'Novel_Read'
           });
       }
-      // ===================================
+
+      // 重载 Disqus 评论区 
+      // 检查 DISQUS 是否已加载
+      if (typeof DISQUS !== 'undefined') {
+          DISQUS.reset({
+              reload: true,
+              config: function () {
+                  // 1. 设置 Disqus 唯一标识符：使用原始索引作为唯一ID
+                  this.page.identifier = 'chapter-' + index; 
+                  // 2. 设置 Disqus 评论标题
+                  this.page.title = chapters[index].title; 
+                  // 3. 设置评论区的 URL (重要，用于分享和链接)
+                  // 建议使用一个基于章节ID的虚拟URL
+                  this.page.url = window.location.href.split('#')[0] + '#/chapter/' + index;
+              }
+          });
+      }
 
     })
     .catch(err => {
