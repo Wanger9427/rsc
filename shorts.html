@@ -111,6 +111,21 @@
 .vl-input textarea::placeholder {
   color: #999;
 }
+
+/* 强制顺序（优先级更高）——放到页面 CSS 的最末尾 */
+#vcomments {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 更高选择器权重并加 !important */
+#vcomments .vlist {
+  order: 1 !important;
+}
+
+#vcomments .vpanel {
+  order: 2 !important;
+}
   
 </style>
 
