@@ -33,6 +33,107 @@ gtag('config', 'G-SWT6TGR3EB');
   /* 内容框 */
   #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
   #content p { margin-bottom:16px; }
+  //评论区样式
+  #vcomments {
+  background-color: #F5F5F5; /* 浅灰背景 */
+  padding: 15px;
+  border-radius: 12px;       /* 圆角 */
+  color: #000;               /* 黑色文字 */
+  margin-top: 20px;
+  box-sizing: border-box;
+  border: 1px solid #1F1F1F; /* 深色边框 */
+}
+
+  /* 显示时间 */
+  .vl-time {
+  display: inline-block;
+  font-size: 12px;
+  color: #555;
+  margin-left: 8px;
+}
+
+/* 评论列表单条 */
+.vl-comment {
+  background-color: #fff;      /* 评论背景白色 */
+  border-radius: 10px;
+  padding: 8px 12px;           /* 调整内边距 */
+  margin-bottom: 10px;
+  border: 1px solid #1F1F1F;  /* 单条评论边框 */
+}
+
+/* 评论昵称 */
+.vl-nick {
+  font-weight: bold;
+  color: #000;
+}
+
+/* 评论内容 */
+.vl-content {
+  margin-top: 4px;
+  color: #000;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* 评论输入框 */
+.vl-input textarea {
+  width: 100%;
+  padding: 6px 10px;           /* 内边距降低 */
+  border-radius: 8px; 
+  border: 1px solid #1F1F1F;   /* 边框颜色 */
+  resize: vertical;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #000;
+  min-height: 40px;             /* 输入框高度降低 */
+}
+
+/* 提交按钮 */
+.vl-submit {
+  margin-top: 6px;
+  background-color: #1F1F1F;   /* 按钮深色 */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.vl-submit:hover {
+  background-color: #333;
+}
+
+/* 访客数与评论数 */
+.vl-stats {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #555;
+  text-align: right;
+}
+
+/* 占位文字颜色 */
+.vl-input textarea::placeholder {
+  color: #999;
+}
+
+/* 强制顺序（优先级更高）——放到页面 CSS 的最末尾 */
+#vcomments {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 更高选择器权重并加 !important */
+#vcomments .vlist {
+  order: 1 !important;
+}
+
+#vcomments .vpanel {
+  order: 2 !important;
+}
+  
 </style>
 
 </head>
@@ -149,6 +250,8 @@ gtag('config', 'G-SWT6TGR3EB');
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
   <div id="content">点击标题开始阅读</div>
+  <!-- Valine 评论区挂载点 -->
+  <div id="vcomments" style="margin-top:40px;display: none"></div>
 </main>
 
 <script>
@@ -413,6 +516,9 @@ function loadChapter(index){
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
       
+      // 加入 Valine
+      loadValine(chapters[index].file);
+      
       // 滚动到内容顶部
       window.scrollTo({top:contentDiv.offsetTop-20, behavior:'smooth'});
 
@@ -441,6 +547,7 @@ function loadChapter(index){
         }
     });
 }
+
   
 // 渲染底部导航栏
 function renderNavButtons(){
@@ -502,5 +609,34 @@ if (chapterSearchInput) {
 // 初始化
 renderChapterList();
 </script>
+
+  <!-- Valine -->
+<script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+<script>
+/**
+ * loadValine(path)
+ * path: 用于区分每篇文章的唯一字符串（建议使用文章 file 路径）
+ * 每次加载新文章时调用一次，Valine 会基于 path 展示/存储该文章的评论
+ */
+function loadValine(path) {
+  const container = document.getElementById('vcomments');
+   container.style.display = 'block';  //显示评论区
+  container.innerHTML = '';  // 清空原有评论区（防止重复）
+
+new Valine({
+  el: '#vcomments',
+  appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  // 替换成你的 AppId
+  appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',           // 替换成你的 AppKey
+  path:path,                        // 用作唯一标识
+  placeholder: '请输入昵称，欢迎留言评论！爱您！',
+  visitor: true,        // 显示访客数
+  avatar: 'hide',       // 隐藏头像
+  meta: ['nick'],       // 只保留昵称
+  pageSize: 10,
+  highlight: true,
+});
+}
+</script>
+  
 </body>
 </html>
