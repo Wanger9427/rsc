@@ -147,18 +147,18 @@
     </style>
 
 <div class="section-card" style="
-        /* 💥 核心修改：使用 background 叠加透明度层 💥 */
-        /* 1. 添加一个 60% 透明度的深色叠加层 (rgba(0,0,0,0.4) 是 40% 不透明，60% 透明) */
-        /* 2. 在其后添加背景图片，并设置 cover 和居中 */
-        background: 
-            linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-            url('reunion/bannner.jpg') center center / cover;
+        /* 💥 核心修改：使用 background 叠加透明白色层 💥 */
+        /* 1. 设置 40% 透明度的白色叠加层 (rgba(255, 255, 255, 0.4)) */
+        /* 2. 紧跟图片路径，并设置 cover 和居中 */
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), 
+            url('reunion/bannner.jpg');
             
-        /* 确保图片加载失败时，有一个备用的颜色（白色） */
-        background-color: #fff; 
+        background-size: cover; 
+        background-position: center center;
         
-        /* 原始文字颜色不变，但我们需要覆盖卡片默认的白色背景，让图片显示 */
-        background-blend-mode: multiply; /* 混合模式，确保叠加层生效 */
+        /* 保持原有的背景颜色 #fff 作为图片加载失败时的备用 */
+        background-color: #fff;
     ">
         <h2>【袁成】重逢</h2>
         <p>成才没有加入老A的故事线<br>全18章正文+3篇番外</p>
