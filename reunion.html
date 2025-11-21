@@ -142,7 +142,11 @@ gtag('config', 'G-SWT6TGR3EB');
 <header style="
     padding-bottom: 15px; 
     border-bottom: 1px solid #333;
-    background: #1a73e8; /* 科技蓝 */
+    /* 💥 替换背景色为图片设置 💥 */
+    background-image: url('reunion/bannner.jpg'); 
+    background-size: cover; /* 关键：确保图片覆盖整个头部，自适应宽度 */
+    background-position: center center; /* 关键：确保图片居中显示 */
+    background-color: #1a73e8; /* 备用背景色，当图片加载失败时显示 */
     color: #fff; /* 默认文字为白色 */
 ">
     <h1 style="
