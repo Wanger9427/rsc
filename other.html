@@ -119,6 +119,23 @@ gtag('config', 'G-SWT6TGR3EB');
 .vl-input textarea::placeholder {
   color: #999;
 }
+
+  /* 让评论区整体允许排序 */
+#vcomments {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 评论列表排第一（在上面） */
+#vcomments .vlist {
+  order: 1;
+}
+
+/* 评论输入框排最后（在下面） */
+#vcomments .vpanel {
+  order: 2;
+}
+
 </style>
 
 </head>
