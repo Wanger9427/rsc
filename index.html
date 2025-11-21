@@ -147,31 +147,22 @@
     </style>
 
 <div class="section-card" style="
-        /* 💥 背景图片设置 💥 */
-        background-image: url('reunion/bannner.jpg'); 
-        background-size: cover; 
-        background-position: center center;
-        background-color: #337ab7; /* 备用背景色 */
+        /* 💥 核心修改：使用 background 叠加透明度层 💥 */
+        /* 1. 添加一个 60% 透明度的深色叠加层 (rgba(0,0,0,0.4) 是 40% 不透明，60% 透明) */
+        /* 2. 在其后添加背景图片，并设置 cover 和居中 */
+        background: 
+            linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+            url('reunion/bannner.jpg') center center / cover;
+            
+        /* 确保图片加载失败时，有一个备用的颜色（白色） */
+        background-color: #fff; 
         
-        /* 💡 确保卡片内部文字清晰 */
-        color: #fff; 
-        border-color: rgba(255, 255, 255, 0.4); /* 调整边框颜色使其在图片上可见 */
+        /* 原始文字颜色不变，但我们需要覆盖卡片默认的白色背景，让图片显示 */
+        background-blend-mode: multiply; /* 混合模式，确保叠加层生效 */
     ">
-        <h2 style="
-            color: #fff; /* 标题文字变白 */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* 添加文字阴影 */
-        ">【袁成】重逢</h2>
-        
-        <p style="
-            color: #eee; /* 描述文字变浅白 */
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* 添加文字阴影 */
-        ">成才没有加入老A的故事线<br>全18章正文+3篇番外</p>
-        
-        <a href="reunion.html" style="
-            /* 按钮背景透明化，让图片透出来 */
-            background-color: rgba(255, 255, 255, 0.2); 
-            border: 1px solid rgba(255, 255, 255, 0.5); /* 增加白色边框 */
-        ">进入分区</a>
+        <h2>【袁成】重逢</h2>
+        <p>成才没有加入老A的故事线<br>全18章正文+3篇番外</p>
+        <a href="reunion.html">进入分区</a>
     </div>
 
     <div class="section-card">
