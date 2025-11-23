@@ -336,7 +336,9 @@
   <!-- Valine 评论区挂载点 -->
   <div id="vcomments" style="margin-top:40px;display: none"></div>
 </main>
-
+  
+  <!-- Valine -->
+<script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
 <script>
 let v;  //评论区的全局变量
 const chapters = [  
@@ -736,18 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modeToggleBtn.addEventListener('click', toggleMode);
 });
 
-// 初始化
-renderChapterList();
-
-</script>
-
-  <!-- Valine -->
-<script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
-<script>
-// 💥 关键点 1: 定义一个全局变量来存储 Valine 实例
-let v;
-
-/**
+  /**
  * loadValine(path)
  * 每次加载新文章时调用，用于初始化或更新评论区路径
  */
@@ -781,8 +772,14 @@ function loadValine(path) {
 
 // ⚠️ 注意：如果您的其他代码中有在页面加载时调用 loadValine('home') 的逻辑，
 // 请确保它不再自动调用，因为我们已经将显示逻辑移到了 loadChapter 中。
-  
+
+// 初始化
+renderChapterList();
+
 </script>
+
+
+
   
 </body>
 </html>
