@@ -3,13 +3,7 @@
 <head>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SWT6TGR3EB"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-SWT6TGR3EB');
-
-</script>
+  
   <meta charset="UTF-8">
   <title>【袁成】老A版《走近科学》</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -304,7 +298,7 @@ gtag('config', 'G-SWT6TGR3EB');
 </div>
 </header>
 
-//新增------------↓
+
 <button id="modeToggle" style="
     position: fixed; 
     top: 20px; 
@@ -321,7 +315,7 @@ gtag('config', 'G-SWT6TGR3EB');
 ">
     🌙 夜间模式
 </button>
-//新增----------↑
+
 
 <main>
 <div id="searchContainer" style="margin-bottom: 20px; text-align: center;">
@@ -614,20 +608,7 @@ function loadChapter(index){
       // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
-      
-      // ===================================
-      // 💥 GA4 细致统计代码 💥
-      // 检查 gtag 函数是否可用 (即 GA 代码是否已加载)
-      if (typeof gtag === 'function') {
-          const chapterTitle = chapters[index].title;
-          
-          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
-              'chapter_title': chapterTitle, // 附加章节标题参数
-              'chapter_index': index,        // 附加章节索引参数
-              'event_category': 'Novel_Read' // 可选：添加分类
-          });
-      }
-      // ===================================
+  
 
     })
     .catch(err => {
