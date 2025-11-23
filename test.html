@@ -190,7 +190,7 @@
     color: var(--desc-color);
   }
   #vcomments {
-    display: flex !important;
+    display: flex;
     flex-direction: column !important;
   }
   #vcomments .vlist {
@@ -423,13 +423,6 @@ function renderChapterList(){
     } else {
         // 否则显示全部章节
         filteredChapters = chapters;
-    }
-
-  // 💥 新增：只要渲染目录列表，就强制隐藏评论区
-    const commentDiv = document.getElementById('vcomments');
-    if (commentDiv) {
-        commentDiv.style.display = 'none';
-        commentDiv.innerHTML = ''; // 可选：清空内容以节省内存
     }
   
     chapterList.innerHTML = "";
