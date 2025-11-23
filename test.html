@@ -336,11 +336,8 @@
   <!-- Valine 评论区挂载点 -->
   <div id="vcomments" style="margin-top:40px;display: none"></div>
 </main>
-  
-  <!-- Valine -->
-<script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+
 <script>
-let v;  //评论区的全局变量
 const chapters = [  
   {title:"午夜心跳", file:"science/Midnight Heartbeat.txt",},
   {title:"午夜军歌惊魂：是亡灵警示，还是记忆的回响？（上）", file:"science/Midnight March Scare(1).txt",},
@@ -356,7 +353,14 @@ const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 
-  /**
+// 💥 完整的 Valine 逻辑块（请插入到您的主 <script> 中）
+// 1. 引入 Valine 库文件
+document.write('<script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>');
+
+// 2. 定义全局变量
+let v;
+
+/**
  * loadValine(path)
  * 每次加载新文章时调用，用于初始化或更新评论区路径
  */
@@ -365,12 +369,12 @@ function loadValine(path) {
   container.innerHTML = '';  // 清空原有评论区（防止重复）
   
   // (夜间模式兼容) 确保 Valine 容器应用背景色变量
-  container.style.backgroundColor = 'var(--valine-bg)';
+  container.style.backgroundColor = 'var(--valine-bg)'; 
 
-  // 💥 关键点 2: 检查 Valine 实例是否已存在
+  // 💥 关键修复点：赋值给全局变量 v
   if (!v) {
-    // 实例不存在：执行第一次初始化
-    v = new Valine({
+    // 实例不存在：执行第一次初始化，并将实例赋值给全局变量 v
+    v = new Valine({ // ⬅️ 必须赋值给 v
         el: '#vcomments',
         appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  // 替换成你的 AppId
         appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',            // 替换成你的 AppKey
@@ -387,9 +391,6 @@ function loadValine(path) {
     v.setPath(path);
   }
 }
-
-// ⚠️ 注意：如果您的其他代码中有在页面加载时调用 loadValine('home') 的逻辑，
-// 请确保它不再自动调用，因为我们已经将显示逻辑移到了 loadChapter 中。
 
   
 // 限制级提示弹窗
