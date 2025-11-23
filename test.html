@@ -424,6 +424,14 @@ function renderChapterList(){
         // 否则显示全部章节
         filteredChapters = chapters;
     }
+
+  // 💥 新增：只要渲染目录列表，就强制隐藏评论区
+    const commentDiv = document.getElementById('vcomments');
+    if (commentDiv) {
+        commentDiv.style.display = 'none';
+        commentDiv.innerHTML = ''; // 可选：清空内容以节省内存
+    }
+  
     chapterList.innerHTML = "";
 
     const totalChapters = filteredChapters.length;
@@ -673,7 +681,11 @@ function renderNavButtons(){
 
       <div style="width:34%; display:flex;flex-direction:column;align-items:center;box-sizing: border-box; ">
         <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;
-        " onclick="contentDiv.innerHTML='请选择标题开始阅读';window.scrollTo({top:0, behavior:'smooth'});">返回目录</button>
+        " onclick="contentDiv.innerHTML='请选择标题开始阅读';
+             // 💥 新增：点击返回目录时，隐藏评论区
+            document.getElementById('vcomments').style.display='none';
+            window.scrollTo({top:0, behavior:'smooth'});
+            ">返回目录</button>
       </div>
 
       <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
