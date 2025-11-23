@@ -725,24 +725,16 @@ function renderNavButtons(){
 
     <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
 
-   <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
+     <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
         ${prevIndex !== null ? `
-          <div style="
-                font-size:12px;
-                /* 💥 修复：使用 desc-color 变量，确保夜间模式标题变色 */
-                color:var(--desc-color);
-                margin-bottom:6px;
-                white-space:nowrap;
-                overflow:hidden;
-                text-overflow:ellipsis;
-            max-width:${titleMaxWidth}; 
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; 
           ">${prevTitle}</div>
           <button style="
                 padding:8px 12px; 
                 font-size:14px; 
                 cursor:pointer; 
                 border-radius:6px; 
-                /* 统一为一行，避免字符串解析问题 */
                 border:1px solid var(--nav-btn-border); background:var(--nav-btn-bg); color:var(--nav-btn-text);
             " onclick="loadChapter(${prevIndex})">上一篇</button>
         ` : `<div style="height:32px;"></div>`}
