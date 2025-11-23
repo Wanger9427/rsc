@@ -215,10 +215,10 @@
         margin-bottom: 5px; 
         text-align: center; /* 居中 */
     ">
-        【袁成】老A版《走近科学》
+        【Test】功能测试
     </h1>
     <p style="font-size: 14px; color: #fff; margin-bottom: 15px; text-align: center; ">
-        沙雕灵异的科学小故事
+        新增功能：夜间模式切换
     </p>
     
    <div style="
@@ -600,8 +600,9 @@ function loadChapter(index){
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
       
-      // 💥 新增：加载文章成功后，显示评论区
+      // 加载文章成功后，显示评论区
       document.getElementById('vcomments').style.display = 'block';
+      
       // 加入 Valine
       loadValine(chapters[index].file);
       
@@ -734,40 +735,52 @@ document.addEventListener('DOMContentLoaded', () => {
     modeToggleBtn.addEventListener('click', toggleMode);
 });
 
-
-
-
 // 初始化
 renderChapterList();
+
 </script>
 
   <!-- Valine -->
 <script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
 <script>
+// 💥 关键点 1: 定义一个全局变量来存储 Valine 实例
+let v;
+
 /**
  * loadValine(path)
- * path: 用于区分每篇文章的唯一字符串（建议使用文章 file 路径）
- * 每次加载新文章时调用一次，Valine 会基于 path 展示/存储该文章的评论
+ * 每次加载新文章时调用，用于初始化或更新评论区路径
  */
 function loadValine(path) {
   const container = document.getElementById('vcomments');
   container.innerHTML = '';  // 清空原有评论区（防止重复）
-  // 💥 (添加夜间模式兼容) 确保 Valine 容器应用背景色变量
+  
+  // (夜间模式兼容) 确保 Valine 容器应用背景色变量
   container.style.backgroundColor = 'var(--valine-bg)';
 
-new Valine({
-  el: '#vcomments',
-  appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  // 替换成你的 AppId
-  appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',           // 替换成你的 AppKey
-  path:path,                        // 用作唯一标识
-  placeholder: '请输入昵称，欢迎留言评论！爱您！',
-  visitor: true,        // 显示访客数
-  avatar: 'hide',       // 隐藏头像
-  meta: ['nick'],       // 只保留昵称
-  pageSize: 10,
-  highlight: true,
-});
+  // 💥 关键点 2: 检查 Valine 实例是否已存在
+  if (!v) {
+    // 实例不存在：执行第一次初始化
+    v = new Valine({
+        el: '#vcomments',
+        appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  // 替换成你的 AppId
+        appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',            // 替换成你的 AppKey
+        path: path,                                 // 用作唯一标识
+        placeholder: '请输入昵称，欢迎留言评论！爱您！',
+        visitor: true,        // 显示访客数
+        avatar: 'hide',         // 隐藏头像
+        meta: ['nick'],       // 只保留昵称
+        pageSize: 10,
+        highlight: true,
+    });
+  } else {
+    // 实例已存在：仅更新路径，不重复初始化
+    v.setPath(path);
+  }
 }
+
+// ⚠️ 注意：如果您的其他代码中有在页面加载时调用 loadValine('home') 的逻辑，
+// 请确保它不再自动调用，因为我们已经将显示逻辑移到了 loadChapter 中。
+  
 </script>
   
 </body>
