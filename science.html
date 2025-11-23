@@ -292,20 +292,20 @@ const chapterSearchInput = document.getElementById('chapterSearch');
 let filteredChapters = chapters; // 初始时，过滤后的列表等于全部列表
 // ------------------------------------
 
-// 获取已读章节索引的集合 (从浏览器存储中读取)
+// 获取已读章节集合 (从浏览器存储中读取)
 function getReadChapters() {
-  const readChaptersJson = localStorage.getItem('readChapters');
-  // 如果有存储，则解析 JSON 并转换为 Set，否则返回空的 Set
-  return readChaptersJson ? new Set(JSON.parse(readChaptersJson)) : new Set();
+  // localStorage 键，使用 'readChapters_other' 
+  const readChaptersJson = localStorage.getItem('readChapters_other');
+  // 如果有存储，则解析 JSON 并转换为 Set，否则返回空的 Set
+  return readChaptersJson ? new Set(JSON.parse(readChaptersJson)) : new Set();
 }
 
-// 标记章节为已读并保存 (保存到浏览器存储中)
+// 标记章节为已读并保存 (现在存储的是文件路径)
 function markChapterAsRead(index) {
-  const readChapters = getReadChapters();
-  // 使用当前章节在 chapters 数组中的索引作为标识符
-  readChapters.add(index); 
-  // 将 Set 转换回数组并存储为 JSON 字符串
-  localStorage.setItem('readChapters', JSON.stringify(Array.from(readChapters)));
+  const readChapters = getReadChapters();
+  // 存储 chapter 的唯一标识符 (file)，而不是动态索引 (index) 
+  readChapters.add(chapters[index].file); 
+  localStorage.setItem('readChapters_other', JSON.stringify(Array.from(readChapters)));
 }
   
 // 渲染章节列表
@@ -349,12 +349,13 @@ function renderChapterList(){
         });
         
         // 检查是否已读并设置黑色
-        if (originalIndex !== -1 && readChapters.has(originalIndex)) {
-            a.style.color = '#000000'; 
-            a.style.fontWeight = 'normal'; 
-        } else {
-            a.style.color = '#337ab7'; // 未读标题颜色
-        }
+        // 检查 readChapters 集合中是否包含 chapter 的文件路径 
+        if (readChapters.has(chapter.file)) {
+            a.style.color = '#000000'; 
+            a.style.fontWeight = 'normal'; 
+        } else {
+            a.style.color = '#337ab7'; // 未读标题颜色
+        }
 
         // 简介
         const desc = document.createElement('span');
