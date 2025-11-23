@@ -183,5 +183,89 @@
     </div>
 </main>
 
+</main>
+
+<div id="homepageModal" style="display:none;">
+    
+    <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.7); z-index:9998;"></div>
+    
+    <div id="modalContent" style="
+        position:fixed; 
+        top:50%; 
+        left:50%; 
+        transform:translate(-50%, -50%); 
+        padding:25px; 
+        width:80%; 
+        max-width:350px;
+        z-index:9999;
+        /* 使用首页的背景和文字色 */
+        background:#fff; 
+        color:#333; 
+        border-radius:10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        line-height:1.5;
+    ">
+        <h2 style="
+            margin-top:0; 
+            font-size:20px; 
+            /* 使用 header 的蓝色主题色 */
+            color:#1a73e8; 
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        ">
+            ✨ 欢迎光临！Wanger衷心欢迎您！
+        </h2>
+        <p style="margin-bottom:20px;">
+            目前我所有的文章都上传到这里了，如果有你能喜欢的文章就太好了<br>
+            也希望可以得到您的留言评论~<br><br>
+           【网页功能更新】<br>新增<夜间模式>切换按钮，正在调试中
+            <br>2025.11.23
+        </p>
+        
+        <button onclick="closeModal()" style="
+            display:block;
+            width:100%; 
+            padding: 10px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 16px;
+            /* 按钮使用主题色 */
+            background:#1a73e8;
+            color:white;
+            border:none;
+        ">我明白了</button>
+    </div>
+</div>
+
+<script>
+    // --- 弹窗控制函数 ---
+    function showModal() {
+        // 确保弹窗可见
+        document.getElementById('homepageModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        // 隐藏弹窗
+        document.getElementById('homepageModal').style.display = 'none';
+    }
+    
+    // --- 页面加载完成后立即显示弹窗 ---
+    // 使用 window.onload 确保所有元素加载完毕后才弹出
+    window.onload = function() {
+        showModal();
+        
+        // 💥 提示：如果您只想让弹窗第一次访问时弹出，请使用以下代码替代 showModal();
+        /*
+        if (!localStorage.getItem('homepageVisited')) {
+            showModal();
+            localStorage.setItem('homepageVisited', 'true');
+        }
+        */
+    };
+</script>
+
+</body>
+</html>
 </body>
 </html>
