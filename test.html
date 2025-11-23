@@ -723,7 +723,8 @@ function renderNavButtons(){
       当前文章：${currentTitle}
     </div>
 
-    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
+    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content: center;
+    align-items:flex-end;font-size:14px;color:#666;">
 
       <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
         ${prevIndex !== null ? `
@@ -773,7 +774,6 @@ function renderNavButtons(){
           " onclick="loadChapter(${nextIndex})">下一篇</button>
         ` : `<div style="height:32px;"></div>`}
       </div>
-
     </div>
   `;
 }
