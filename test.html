@@ -320,7 +320,8 @@
 
 
 <main>
-<div id="searchContainer" style="margin-bottom: 20px; text-align: center;">
+
+  <div id="searchContainer" style="margin-bottom: 20px; text-align: center;">
     <input type="text" id="chapterSearch" placeholder="输入文章标题关键词..." style="
         padding: 8px 12px; 
         width: 90%; 
@@ -328,14 +329,15 @@
         border: 1px solid #ccc; 
         border-radius: 5px;
         font-size: 16px;
-    ">
-</div>
-
+    "></div>
+  
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
-  <div id="content">点击标题开始阅读</div>
+  <div id="content">点击标题开始阅读</div> 
+  
   <!-- Valine 评论区挂载点 -->
   <div id="vcomments" style="margin-top:40px;display: none"></div>
+
 </main>
 
 <script>
@@ -354,11 +356,7 @@ const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 
-// Valine 逻辑 (稳定版 - 销毁重建法)
-
-/**
- * loadValine(path) 每次加载新文章时调用
- */
+// Valine加载，每次加载新文章时调用
 function loadValine(path) {
   // 1. 获取容器
   const container = document.getElementById('vcomments');  
@@ -371,23 +369,18 @@ function loadValine(path) {
       el: '#vcomments',
       appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  
       appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',            
-      path: path,   // 直接使用新路径                              
+      path: path,                           
       placeholder: '请输入昵称，欢迎留言评论！爱您！',
       visitor: true,        
       avatar: 'hide',         
       meta: ['nick'],       
       pageSize: 10,
       highlight: true,
-      recordIP: true, // 建议开启，有助于反垃圾
+      recordIP: true, 
   });
 }
-
   
 // 限制级提示弹窗
-/**
- * 弹出限制级内容警告，并返回一个 Promise。
- * 用户点击“确认”则 resolve，点击“取消”则 reject。
- */
 function showRestrictedWarning() {
     return new Promise((resolve, reject) => {
         const message = "警告：此章节包含限制级内容，请确定您已年满18岁。";
@@ -400,10 +393,9 @@ function showRestrictedWarning() {
     });
 }
 
-// --- 新增搜索功能变量和元素引用 ---
+// 新增搜索功能变量和元素引用
 const chapterSearchInput = document.getElementById('chapterSearch');
 let filteredChapters = chapters; // 初始时，过滤后的列表等于全部列表
-// ------------------------------------
 
 // 获取已读章节集合 (从浏览器存储中读取)
 function getReadChapters() {
@@ -416,7 +408,7 @@ function getReadChapters() {
 // 标记章节为已读并保存 (现在存储的是文件路径)
 function markChapterAsRead(index) {
   const readChapters = getReadChapters();
-  // 存储 chapter 的唯一标识符 (file)，而不是动态索引 (index) 
+  // 存储 chapter 的唯一标识符 (file)
   readChapters.add(chapters[index].file); 
   localStorage.setItem('readChapters_other', JSON.stringify(Array.from(readChapters)));
 }
@@ -432,7 +424,6 @@ function renderChapterList(){
         // 否则显示全部章节
         filteredChapters = chapters;
     }
-
     chapterList.innerHTML = "";
 
     const totalChapters = filteredChapters.length;
@@ -444,8 +435,7 @@ function renderChapterList(){
 
     for(let i=start; i<end; i++){
         const chapter = filteredChapters[i]; // 获取当前章节对象
-        const originalIndex = chapters.findIndex(c => c.file === chapter.file);
-        
+        const originalIndex = chapters.findIndex(c => c.file === chapter.file);        
         const li = document.createElement('li');
         li.className = "chapter-item";
         
@@ -467,7 +457,7 @@ function renderChapterList(){
             a.style.color = 'var(--read-color)';; 
             a.style.fontWeight = 'normal'; 
         } else {
-            a.style.color = 'var(--link-color)'; // 💥 新增/替换为 CSS 变量
+            a.style.color = 'var(--link-color)'; // 替换为 CSS 变量
         }
 
         // 简介
@@ -621,7 +611,7 @@ function loadChapter(index){
         return `<p style="
          line-height: 1.8;
           font-size: 16px;
-          color: var(--text-color); /* 💥 替换为 CSS 变量 */
+          color: var(--text-color); /* 替换为 CSS 变量 */
           margin-bottom: 1.5em;
           text-align: justify;
           font-family: 'Microsoft YaHei', sans-serif;
