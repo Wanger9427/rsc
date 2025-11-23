@@ -354,28 +354,19 @@ const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 
-// -----------------------------------------------------------
 // Valine 逻辑 (稳定版 - 销毁重建法)
-// -----------------------------------------------------------
 
 /**
- * loadValine(path)
- * 每次加载新文章时调用
+ * loadValine(path) 每次加载新文章时调用
  */
 function loadValine(path) {
   // 1. 获取容器
-  const container = document.getElementById('vcomments');
-  
-  // 💥 关键修改：暴力清空容器 💥
-  // 这会移除上一个 Valine 实例留下的所有 DOM 元素
-  // 既然 setPath 报错，我们就把旧的彻底删掉，重新来过。
-  container.innerHTML = ''; 
-  
+  const container = document.getElementById('vcomments');  
+  // 清空容器 
+  container.innerHTML = '';
   // 2. (夜间模式兼容) 重新设置背景色
   container.style.backgroundColor = 'var(--valine-bg)'; 
-
   // 3. 每次都执行 new Valine
-  // 不再检查 if(!v)，也不再用 v.setPath
   new Valine({ 
       el: '#vcomments',
       appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  
