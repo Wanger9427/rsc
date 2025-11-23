@@ -40,7 +40,7 @@
       --header-bg: #333;        
       --header-text-color: #e0e0e0;
       --link-color: #79a6fe;    
-      --read-color: #a0a0a0;
+      --read-color: #ffffff;
       --desc-color: #a0a0a0;    
       --pagination-bg: #444;    
       --nav-btn-bg: #444;
@@ -434,7 +434,7 @@ function renderChapterList(){
         // 检查是否已读并设置黑色
         // 检查 readChapters 集合中是否包含 chapter 的文件路径 
             if (readChapters.has(chapter.file)) {
-            a.style.color = '#000000'; 
+            a.style.color = 'var(--read-color)';; 
             a.style.fontWeight = 'normal'; 
         } else {
             a.style.color = 'var(--link-color)'; // 💥 新增/替换为 CSS 变量
@@ -600,6 +600,8 @@ function loadChapter(index){
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
       
+      // 💥 新增：加载文章成功后，显示评论区
+      document.getElementById('vcomments').style.display = 'block';
       // 加入 Valine
       loadValine(chapters[index].file);
       
@@ -749,8 +751,9 @@ renderChapterList();
  */
 function loadValine(path) {
   const container = document.getElementById('vcomments');
-   container.style.display = 'block';  //显示评论区
   container.innerHTML = '';  // 清空原有评论区（防止重复）
+  // 💥 (添加夜间模式兼容) 确保 Valine 容器应用背景色变量
+  container.style.backgroundColor = 'var(--valine-bg)';
 
 new Valine({
   el: '#vcomments',
