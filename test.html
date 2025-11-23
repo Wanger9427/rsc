@@ -46,6 +46,7 @@
       --pagination-bg: #444;    
       --nav-btn-bg: #444;
       --nav-btn-border: #666;
+      --nav-btn-text: #ddd;     /* 导航按钮文字改为浅色 */
       --search-bg: #3b3b3b;
       --valine-bg: #2b2b2b;
       --valine-text: #e0e0e0;
@@ -53,6 +54,7 @@
       --valine-input-bg: #3b3b3b;
       --valine-input-border: #666;
       --valine-submit-bg: #555;
+    
   }
 
   /* 将所有硬编码颜色替换为变量 */
@@ -524,15 +526,26 @@ function renderPagination(){
   // 当前页码（从 1 开始计数）
   const displayCurrentPage = currentPage + 1;
   
-  // --- 通用样式 ---
-  const buttonStyle = 'padding: 5px 10px; margin: 0 5px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 14px;';
+  // --- 通用样式 (使用 CSS 变量) ---
+  const buttonStyle = `
+    padding: 5px 10px; 
+    margin: 0 5px; 
+    cursor: pointer; 
+    /* 💥 使用 CSS 变量 */
+    border: 1px solid var(--nav-btn-border); 
+    background: var(--nav-btn-bg); 
+    color: var(--nav-btn-text);
+    border-radius: 4px; 
+    font-size: 14px;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  `;
 
   // --- 第一行容器：核心导航 (上一页 / 页码 / 下一页) ---
   const topRow = document.createElement('div');
   topRow.style.display = 'flex';
-  topRow.style.justifyContent = 'center'; // 居中显示
+  topRow.style.justifyContent = 'center'; 
   topRow.style.alignItems = 'center';
-  topRow.style.padding = '10px 0'; // 顶部和底部的内边距
+  topRow.style.padding = '10px 0'; 
   
   // --- 创建【上一页】按钮 ---
   const prevBtn = document.createElement('button');
@@ -552,8 +565,10 @@ function renderPagination(){
   // --- 显示页码信息 ---
   const pageInfo = document.createElement('span');
   pageInfo.textContent = ` (${displayCurrentPage} / ${totalPages}) `;
-  pageInfo.style.margin = '0 10px'; 
+  pageInfo.style.margin = '0 10px';  
   pageInfo.style.fontSize = '14px';
+  // 💥 确保页码信息文字颜色正确
+  pageInfo.style.color = 'var(--text-color)';
   topRow.appendChild(pageInfo);
 
   // --- 创建【下一页】按钮 ---
@@ -577,12 +592,14 @@ function renderPagination(){
   // --- 第二行容器：跳转功能 ---
   const bottomRow = document.createElement('div');
   bottomRow.style.display = 'flex';
-  bottomRow.style.justifyContent = 'center'; 
+  bottomRow.style.justifyContent = 'center';  
   bottomRow.style.alignItems = 'center';
   bottomRow.style.paddingBottom = '15px'; 
 
   const jumpContainer = document.createElement('span');
   jumpContainer.style.fontSize = '14px';
+  // 💥 确保文字颜色正确
+  jumpContainer.style.color = 'var(--text-color)';
   jumpContainer.textContent = '跳转至: ';
   
   // 1. 输入框
@@ -591,13 +608,24 @@ function renderPagination(){
   pageInput.min = 1;
   pageInput.max = totalPages;
   pageInput.value = displayCurrentPage;
-  pageInput.style.cssText = 'width: 40px; text-align: center; padding: 3px; border: 1px solid #ccc; border-radius: 3px; margin-right: 5px; font-size: 14px;';
+  // 💥 确保输入框样式使用 CSS 变量
+  pageInput.style.cssText = `
+    width: 40px; 
+    text-align: center; 
+    padding: 3px; 
+    border: 1px solid var(--nav-btn-border); 
+    background: var(--nav-btn-bg); 
+    color: var(--nav-btn-text);
+    border-radius: 3px; 
+    margin-right: 5px; 
+    font-size: 14px;
+  `;
   
   // 2. 跳转按钮
   const jumpBtn = document.createElement('button');
   jumpBtn.textContent = 'Go';
   jumpBtn.style.cssText = buttonStyle;
-  jumpBtn.style.margin = '0'; 
+  jumpBtn.style.margin = '0';  
 
   jumpBtn.addEventListener('click', () => {
     const targetPage = parseInt(pageInput.value);
@@ -681,52 +709,77 @@ function loadChapter(index){
   
 // 渲染底部导航栏
 function renderNavButtons(){
-  const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
-  const nextIndex = currentChapterIndex < chapters.length - 1 ? currentChapterIndex + 1 : null;
+  const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
+  const nextIndex = currentChapterIndex < chapters.length - 1 ? currentChapterIndex + 1 : null;
 
-  const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
-  const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
-  const currentTitle = chapters[currentChapterIndex].title || "";
-  const titleMaxWidth = '80px'; 
+  const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
+  const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
+  const currentTitle = chapters[currentChapterIndex].title || "";
+  const titleMaxWidth = '80px'; 
 
-  return `
-    <div style="text-align:center;font-size:12px;color:#999;margin:10px 0 10px 0;white-space:nowrap;overflow:hidden;
-    text-overflow:ellipsis;max-width:200px;margin-left:auto;margin-right:auto;">
-      当前文章：${currentTitle}
-    </div>
+  return `
+    <div style="text-align:center;font-size:12px;color:#999;margin:10px 0 10px 0;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;max-width:200px;margin-left:auto;margin-right:auto;">
+      当前文章：${currentTitle}
+    </div>
 
-    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
+    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
 
-      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
-        ${prevIndex !== null ? `
-          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-          max-width:${titleMaxWidth}; 
-          ">${prevTitle}</div>
-          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; 
-          background:#fff;" onclick="loadChapter(${prevIndex})">上一篇</button>
-        ` : `<div style="height:32px;"></div>`}
-      </div>
+      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
+        ${prevIndex !== null ? `
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; 
+          ">${prevTitle}</div>
+          <button style="
+                padding:8px 12px; 
+                font-size:14px; 
+                cursor:pointer; 
+                border-radius:6px; 
+                /* 💥 替换硬编码颜色 */
+                border:1px solid var(--nav-btn-border); 
+            background:var(--nav-btn-bg);
+                color:var(--nav-btn-text);
+            " onclick="loadChapter(${prevIndex})">上一篇</button>
+        ` : `<div style="height:32px;"></div>`}
+      </div>
 
-      <div style="width:34%; display:flex;flex-direction:column;align-items:center;box-sizing: border-box; ">
-        <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;
+      <div style="width:34%; display:flex;flex-direction:column;align-items:center;box-sizing: border-box; ">
+        <button style="
+            padding:8px 12px; 
+            font-size:14px; 
+            cursor:pointer; 
+            border-radius:6px; 
+            /* 💥 替换硬编码颜色 */
+            border:1px solid var(--nav-btn-border); 
+            background:var(--nav-btn-bg);
+            color:var(--nav-btn-text);
         " onclick="contentDiv.innerHTML='请选择标题开始阅读';
-             // 💥 新增：点击返回目录时，隐藏评论区
-            document.getElementById('vcomments').style.display='none';
-            window.scrollTo({top:0, behavior:'smooth'});
-            ">返回目录</button>
-      </div>
+             // 隐藏评论区
+            document.getElementById('vcomments').style.display='none';
+            window.scrollTo({top:0, behavior:'smooth'});
+            ">返回目录</button>
+      </div>
 
-      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
-        ${nextIndex !== null ? `
-          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-          max-width:${titleMaxWidth}; text-align:right;">${nextTitle}</div>
-          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" 
-          onclick="loadChapter(${nextIndex})">下一篇</button>
-        ` : `<div style="height:32px;"></div>`}
-      </div>
+      <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
+        ${nextIndex !== null ? `
+          <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          max-width:${titleMaxWidth}; text-align:right;">${nextTitle}</div>
+          <button style="
+                padding:8px 12px; 
+                font-size:14px; 
+                cursor:pointer; 
+                border-radius:6px; 
+                /* 💥 替换硬编码颜色 */
+                border:1px solid var(--nav-btn-border); 
+                background:var(--nav-btn-bg);
+                color:var(--nav-btn-text);
+            " 
+          onclick="loadChapter(${nextIndex})">下一篇</button>
+        ` : `<div style="height:32px;"></div>`}
+      </div>
 
-    </div>
-  `;
+    </div>
+  `;
 }
 
 // --- 搜索框事件监听器 ---
