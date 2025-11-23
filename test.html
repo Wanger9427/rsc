@@ -2,20 +2,11 @@
 <html lang="zh">
 <head>
 
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SWT6TGR3EB"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SWT6TGR3EB');
-</script>
-
 <!-- 评论区 -->
 <script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
   
   <meta charset="UTF-8">
-  <title>【袁成】短篇文</title>
+  <title>【test】短篇文</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   /* 默认（白天）模式的 CSS 变量 */
@@ -226,10 +217,10 @@
         margin-bottom: 5px; 
         text-align: center; /* 居中 */
     ">
-        【袁成】短篇文
+        【test】短篇文
     </h1>
     <p style="font-size: 14px; color: #fff; margin-bottom: 15px; text-align: center; ">
-        每篇文相互独立<br>时间线与背景设定非常混乱
+        新增功能：夜间模式<br>注：正式更新时记得加GA4模块<br>待调整：夜间模式按钮颜色[1123]
     </p>
     
    <div style="
@@ -678,20 +669,6 @@ function loadChapter(index){
       // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
-     
-      // ===================================
-      // 💥 GA4 细致统计代码 💥
-      // 检查 gtag 函数是否可用 (即 GA 代码是否已加载)
-      if (typeof gtag === 'function') {
-          const chapterTitle = chapters[index].title;
-          
-          gtag('event', 'read_chapter', { // 发送名为 'read_chapter' 的事件
-              'chapter_title': chapterTitle, // 附加章节标题参数
-              'chapter_index': index,        // 附加章节索引参数
-              'event_category': 'Novel_Read' // 可选：添加分类
-          });
-      }
-      // ===================================
 
     })
     .catch(err => {
