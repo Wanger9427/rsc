@@ -1,135 +1,219 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
+
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SWT6TGR3EB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-SWT6TGR3EB');
 </script>
+
+<!-- 评论区 -->
+<script src="https://unpkg.com/valine/dist/Valine.min.js"></script>
+  
   <meta charset="UTF-8">
   <title>【袁成】短篇文</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body { font-family:"Microsoft YaHei",sans-serif; background:#fdfdfd; color:#333; margin:0; padding:0; }
-  header { text-align:center; padding:30px 20px; background:#1a73e8; color:#fff; }
+  /* 默认（白天）模式的 CSS 变量 */
+  :root {
+      --bg-color: #fdfdfd;      /* 主背景色 */
+      --text-color: #333;       /* 主文本色 */
+      --content-bg: #f5f5f5;    /* 内容框背景 */
+      --border-color: #ddd;     /* 边框颜色 */
+      --header-bg: #1a73e8;     /* 头部背景 */
+      --header-text-color: #fff; /* 头部文字颜色 */
+      --link-color: #1a73e8;    /* 链接和未读标题色 */
+      --read-color: #000000;    /* 已读标题色 */
+      --desc-color: #888;       /* 描述文字颜色 */
+      --pagination-bg: #fff;    /* 分页按钮背景 */
+      --nav-btn-bg: #fff;       /* 导航按钮背景 */
+      --nav-btn-border: #ccc;   /* 导航按钮边框 */
+      --search-bg: #fff;        /* 搜索框背景 */
+      --valine-bg: #F5F5F5;     /* 评论区主背景 */
+      --valine-text: #000;      /* 评论区文字颜色 */
+      --valine-border: #1F1F1F; /* 评论区边框颜色 */
+      --valine-input-bg: #fff;  /* 评论输入框背景 */
+      --valine-input-border: #1F1F1F; /* 评论输入框边框 */
+      --valine-submit-bg: #1F1F1F; /* 评论提交按钮背景 */
+  }
+
+  /* 🌙 夜间模式的 CSS 变量覆盖 */
+  .dark-mode {
+      --bg-color: #1a1a1a;      
+      --text-color: #e0e0e0;    
+      --content-bg: #2b2b2b;    
+      --border-color: #555;     
+      --header-bg: #333;        
+      --header-text-color: #e0e0e0;
+      --link-color: #79a6fe;    
+      --read-color: #ffffff;
+      --desc-color: #a0a0a0;    
+      --pagination-bg: #444;    
+      --nav-btn-bg: #444;
+      --nav-btn-border: #666;
+      --nav-btn-text: #ddd;     /* 导航按钮文字改为浅色 */
+      --search-bg: #3b3b3b;
+      --valine-bg: #2b2b2b;
+      --valine-text: #e0e0e0;
+      --valine-border: #555;
+      --valine-input-bg: #3b3b3b;
+      --valine-input-border: #666;
+      --valine-submit-bg: #555;
+    
+  }
+
+  /* 将所有硬编码颜色替换为变量 */
+  body { 
+      font-family:"Microsoft YaHei",sans-serif; 
+      background:var(--bg-color); 
+      color:var(--text-color); 
+      margin:0; 
+      padding:0;
+      transition: background 0.3s, color 0.3s; /* 增加过渡效果 */
+  }
+  header { 
+      text-align:center; 
+      padding:30px 20px; 
+      background:var(--header-bg); 
+      color:var(--header-text-color); /* 使用新的头部文字变量 */
+  }
   header h1 { margin:0; font-size:26px; }
   main { max-width:800px; margin:20px auto; padding:0 20px; }
   /* ===章节列表=== */
   #chapterList { list-style:none; padding-left:0; margin-bottom:20px; }
-  /* 每一行：改为上下结构，不再侧向排布 */
   .chapter-item {margin-bottom:14px;}
   /* 标题 */
-  .chapter-title {display:block;text-decoration:none;color:#1a73e8;font-weight:bold;cursor:pointer;font-size:17px;}
+  /* ⚠️ color 由 JS 动态控制，未读默认色为 var(--link-color) */
+  .chapter-title {
+      display:block;
+      text-decoration:none;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:17px;
+  }
   .chapter-title:hover {text-decoration:underline;}
   /* 简介：放在标题下方 */
-  .chapter-desc {display:block;margin-top:4px;font-size:13px;color:#888;line-height:1.4;}
+  .chapter-desc {display:block;margin-top:4px;font-size:13px;color:var(--desc-color);line-height:1.4;}
   /* 分页 */
   #pagination { text-align:center; margin-top:15px; }
-  #pagination button { margin:0 3px; padding:5px 10px; cursor:pointer; }
+  #pagination button { 
+      margin:0 3px; padding:5px 10px; cursor:pointer; 
+      /* 使用变量 */
+      background: var(--pagination-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+  }
   /* 内容框 */
-  #content { padding:20px; border:1px solid #ddd; border-radius:10px; background:#f5f5f5; min-height:200px; margin-top:20px; }
+  #content { 
+      padding:20px; 
+      /* 使用变量 */
+      border:1px solid var(--border-color); 
+      border-radius:10px; 
+      background:var(--content-bg); 
+      min-height:200px; 
+      margin-top:20px;
+      color: var(--text-color); 
+  }
   #content p { margin-bottom:16px; }
+
+  /* 搜索框 */
+  #chapterSearch {
+      padding: 8px 12px; 
+      width: 90%; 
+      max-width: 500px; 
+      border: 1px solid var(--border-color) !important; /* 使用变量 */
+      border-radius: 5px;
+      font-size: 16px;
+      background: var(--search-bg) !important; /* 使用变量 */
+      color: var(--text-color) !important; /* 使用变量 */
+  }
+
   
-  //评论区样式
+  /* Valine 评论区样式 (使用变量) */
   #vcomments {
-  background-color: #F5F5F5; /* 浅灰背景 */
-  padding: 15px;
-  border-radius: 12px;       /* 圆角 */
-  color: #000;               /* 黑色文字 */
-  margin-top: 20px;
-  box-sizing: border-box;
-  border: 1px solid #1F1F1F; /* 深色边框 */
-}
-
-/* 评论列表单条 */
-.vl-comment {
-  background-color: #fff;      /* 评论背景白色 */
-  border-radius: 10px;
-  padding: 8px 12px;           /* 调整内边距 */
-  margin-bottom: 10px;
-  border: 1px solid #1F1F1F;  /* 单条评论边框 */
-}
-
-/* 评论昵称 */
-.vl-nick {
-  font-weight: bold;
-  color: #000;
-}
-
-/* 评论内容 */
-.vl-content {
-  margin-top: 4px;
-  color: #000;
-  line-height: 1.4;
-  word-break: break-word;
-}
-
-/* 评论输入框 */
-.vl-input textarea {
-  width: 100%;
-  padding: 6px 10px;           /* 内边距降低 */
-  border-radius: 8px; 
-  border: 1px solid #1F1F1F;   /* 边框颜色 */
-  resize: vertical;
-  font-size: 14px;
-  box-sizing: border-box;
-  background-color: #fff;
-  color: #000;
-  min-height: 40px;             /* 输入框高度降低 */
-}
-
-/* 提交按钮 */
-.vl-submit {
-  margin-top: 6px;
-  background-color: #1F1F1F;   /* 按钮深色 */
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 5px 12px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.vl-submit:hover {
-  background-color: #333;
-}
-
-/* 访客数与评论数 */
-.vl-stats {
-  margin-bottom: 10px;
-  font-size: 13px;
-  color: #555;
-  text-align: right;
-}
-
-/* 占位文字颜色 */
-.vl-input textarea::placeholder {
-  color: #999;
-}
-
-/* 强制顺序（优先级更高）——放到页面 CSS 的最末尾 */
-#vcomments {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-/* 更高选择器权重并加 !important */
-#vcomments .vlist {
-  order: 1 !important;
-}
-
-#vcomments .vpanel {
-  order: 2 !important;
-}
-  
+    background-color: var(--valine-bg);
+    padding: 15px;
+    border-radius: 12px;
+    color: var(--valine-text);
+    margin-top: 20px;
+    box-sizing: border-box;
+    border: 1px solid var(--valine-border);
+  }
+  .vl-time {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--desc-color);
+    margin-left: 8px;
+  }
+  .vl-comment {
+    background-color: var(--valine-input-bg);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--valine-border);
+  }
+  .vl-nick {
+    font-weight: bold;
+    color: var(--valine-text);
+  }
+  .vl-content {
+    margin-top: 4px;
+    color: var(--valine-text);
+    line-height: 1.4;
+    word-break: break-word;
+  }
+  .vl-input textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 8px; 
+    border: 1px solid var(--valine-input-border);
+    resize: vertical;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: var(--valine-input-bg);
+    color: var(--valine-text);
+    min-height: 40px;
+  }
+  .vl-submit {
+    margin-top: 6px;
+    background-color: var(--valine-submit-bg);
+    color: var(--header-text-color);
+    border: none;
+    border-radius: 8px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+  .vl-submit:hover {
+    background-color: var(--valine-border);
+  }
+  .vl-stats {
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--desc-color);
+    text-align: right;
+  }
+  .vl-input textarea::placeholder {
+    color: var(--desc-color);
+  }
+  #vcomments {
+    display: flex;
+    flex-direction: column !important;
+  }
+  #vcomments .vlist {
+    order: 1 !important;
+  }
+  #vcomments .vpanel {
+    order: 2 !important;
+  }
 </style>
-
 </head>
+  
 <body>
 
 <header style="
@@ -147,7 +231,7 @@
         【袁成】短篇文
     </h1>
     <p style="font-size: 14px; color: #fff; margin-bottom: 15px; text-align: center; ">
-        每篇文相互独立<br>时间线与背景设定非常混乱
+         每篇文相互独立<br>时间线与背景设定非常混乱
     </p>
     
    <div style="
@@ -183,7 +267,7 @@
             返回首页
         </a>
         
-        <div style="
+               <div style="
             display: flex;
             align-items: center;
             overflow-x: auto; /* 关键：允许横向滚动 */
@@ -228,8 +312,28 @@
 </div>
 </header>
 
+
+<button id="modeToggle" style="
+    position: fixed; 
+    top: 20px; 
+    right: 20px; 
+    padding: 8px 12px; 
+    border-radius: 6px; 
+    background: #fff; 
+    color: #333;
+    border: 1px solid #ccc; 
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 1000;
+    transition: background 0.3s, color 0.3s; 
+">
+    🌙 夜间模式
+</button>
+
+
 <main>
-<div id="searchContainer" style="margin-bottom: 20px; text-align: center;">
+
+  <div id="searchContainer" style="margin-bottom: 20px; text-align: center;">
     <input type="text" id="chapterSearch" placeholder="输入文章标题关键词..." style="
         padding: 8px 12px; 
         width: 90%; 
@@ -237,15 +341,15 @@
         border: 1px solid #ccc; 
         border-radius: 5px;
         font-size: 16px;
-    ">
-</div>
-
+    "></div>
+  
   <ul id="chapterList"></ul>
   <div id="pagination"></div>
-  <div id="content">点击标题开始阅读</div>
-    <!-- Valine 评论区挂载点 -->
-  <div id="vcomments" style="margin-top:40px;display: none"></div>
+  <div id="content">点击标题开始阅读</div> 
   
+  <!-- Valine 评论区挂载点 -->
+  <div id="vcomments" style="margin-top:40px;display: none"></div>
+
 </main>
 
 <script>
@@ -299,11 +403,31 @@ const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
 
+// Valine加载，每次加载新文章时调用
+function loadValine(path) {
+  // 1. 获取容器
+  const container = document.getElementById('vcomments');  
+  // 清空容器 
+  container.innerHTML = '';
+  // 2. (夜间模式兼容) 重新设置背景色
+  container.style.backgroundColor = 'var(--valine-bg)'; 
+  // 3. 每次都执行 new Valine
+  new Valine({ 
+      el: '#vcomments',
+      appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  
+      appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',            
+      path: path,                           
+      placeholder: '请输入昵称，欢迎留言评论！爱您！',
+      visitor: true,        
+      avatar: 'hide',         
+      meta: ['nick'],       
+      pageSize: 10,
+      highlight: true,
+      recordIP: true, 
+  });
+}
+  
 // 限制级提示弹窗
-/**
- * 弹出限制级内容警告，并返回一个 Promise。
- * 用户点击“确认”则 resolve，点击“取消”则 reject。
- */
 function showRestrictedWarning() {
     return new Promise((resolve, reject) => {
         const message = "警告：此章节包含限制级内容，请确定您已年满18岁。";
@@ -316,14 +440,13 @@ function showRestrictedWarning() {
     });
 }
 
-// --- 新增搜索功能变量和元素引用 ---
+// 新增搜索功能变量和元素引用
 const chapterSearchInput = document.getElementById('chapterSearch');
 let filteredChapters = chapters; // 初始时，过滤后的列表等于全部列表
-// ------------------------------------
 
 // 获取已读章节集合 (从浏览器存储中读取)
 function getReadChapters() {
-  // 💥 关键修改 1: 更改 localStorage 键，使用 'readChapters_other' 💥
+  // localStorage 键，使用 'readChapters_other' 
   const readChaptersJson = localStorage.getItem('readChapters_other');
   // 如果有存储，则解析 JSON 并转换为 Set，否则返回空的 Set
   return readChaptersJson ? new Set(JSON.parse(readChaptersJson)) : new Set();
@@ -332,9 +455,8 @@ function getReadChapters() {
 // 标记章节为已读并保存 (现在存储的是文件路径)
 function markChapterAsRead(index) {
   const readChapters = getReadChapters();
-  // 💥 关键修改 2: 存储 chapter 的唯一标识符 (file)，而不是动态索引 (index) 💥
+  // 存储 chapter 的唯一标识符 (file)
   readChapters.add(chapters[index].file); 
-  // 💥 关键修改 3: 使用新的 key 💥
   localStorage.setItem('readChapters_other', JSON.stringify(Array.from(readChapters)));
 }
   
@@ -349,7 +471,7 @@ function renderChapterList(){
         // 否则显示全部章节
         filteredChapters = chapters;
     }
-
+  
     chapterList.innerHTML = "";
 
     const totalChapters = filteredChapters.length;
@@ -361,8 +483,7 @@ function renderChapterList(){
 
     for(let i=start; i<end; i++){
         const chapter = filteredChapters[i]; // 获取当前章节对象
-        const originalIndex = chapters.findIndex(c => c.file === chapter.file);
-        
+        const originalIndex = chapters.findIndex(c => c.file === chapter.file);        
         const li = document.createElement('li');
         li.className = "chapter-item";
         
@@ -379,12 +500,12 @@ function renderChapterList(){
         });
         
         // 检查是否已读并设置黑色
-        // 💥 关键修改 4: 检查 readChapters 集合中是否包含 chapter 的文件路径 💥
-        if (readChapters.has(chapter.file)) {
-            a.style.color = '#000000'; 
+        // 检查 readChapters 集合中是否包含 chapter 的文件路径 
+            if (readChapters.has(chapter.file)) {
+            a.style.color = 'var(--read-color)';; 
             a.style.fontWeight = 'normal'; 
         } else {
-            a.style.color = '#337ab7'; // 未读标题颜色
+            a.style.color = 'var(--link-color)'; // 替换为 CSS 变量
         }
 
         // 简介
@@ -414,15 +535,26 @@ function renderPagination(){
   // 当前页码（从 1 开始计数）
   const displayCurrentPage = currentPage + 1;
   
-  // --- 通用样式 ---
-  const buttonStyle = 'padding: 5px 10px; margin: 0 5px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; font-size: 14px;';
+  // --- 通用样式 (使用 CSS 变量) ---
+  const buttonStyle = `
+    padding: 5px 10px; 
+    margin: 0 5px; 
+    cursor: pointer; 
+    /* 💥 使用 CSS 变量 */
+    border: 1px solid var(--nav-btn-border); 
+    background: var(--nav-btn-bg); 
+    color: var(--nav-btn-text);
+    border-radius: 4px; 
+    font-size: 14px;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  `;
 
   // --- 第一行容器：核心导航 (上一页 / 页码 / 下一页) ---
   const topRow = document.createElement('div');
   topRow.style.display = 'flex';
-  topRow.style.justifyContent = 'center'; // 居中显示
+  topRow.style.justifyContent = 'center'; 
   topRow.style.alignItems = 'center';
-  topRow.style.padding = '10px 0'; // 顶部和底部的内边距
+  topRow.style.padding = '10px 0'; 
   
   // --- 创建【上一页】按钮 ---
   const prevBtn = document.createElement('button');
@@ -442,8 +574,10 @@ function renderPagination(){
   // --- 显示页码信息 ---
   const pageInfo = document.createElement('span');
   pageInfo.textContent = ` (${displayCurrentPage} / ${totalPages}) `;
-  pageInfo.style.margin = '0 10px'; 
+  pageInfo.style.margin = '0 10px';  
   pageInfo.style.fontSize = '14px';
+  // 💥 确保页码信息文字颜色正确
+  pageInfo.style.color = 'var(--text-color)';
   topRow.appendChild(pageInfo);
 
   // --- 创建【下一页】按钮 ---
@@ -467,12 +601,14 @@ function renderPagination(){
   // --- 第二行容器：跳转功能 ---
   const bottomRow = document.createElement('div');
   bottomRow.style.display = 'flex';
-  bottomRow.style.justifyContent = 'center'; 
+  bottomRow.style.justifyContent = 'center';  
   bottomRow.style.alignItems = 'center';
   bottomRow.style.paddingBottom = '15px'; 
 
   const jumpContainer = document.createElement('span');
   jumpContainer.style.fontSize = '14px';
+  // 💥 确保文字颜色正确
+  jumpContainer.style.color = 'var(--text-color)';
   jumpContainer.textContent = '跳转至: ';
   
   // 1. 输入框
@@ -481,13 +617,24 @@ function renderPagination(){
   pageInput.min = 1;
   pageInput.max = totalPages;
   pageInput.value = displayCurrentPage;
-  pageInput.style.cssText = 'width: 40px; text-align: center; padding: 3px; border: 1px solid #ccc; border-radius: 3px; margin-right: 5px; font-size: 14px;';
+  // 💥 确保输入框样式使用 CSS 变量
+  pageInput.style.cssText = `
+    width: 40px; 
+    text-align: center; 
+    padding: 3px; 
+    border: 1px solid var(--nav-btn-border); 
+    background: var(--nav-btn-bg); 
+    color: var(--nav-btn-text);
+    border-radius: 3px; 
+    margin-right: 5px; 
+    font-size: 14px;
+  `;
   
   // 2. 跳转按钮
   const jumpBtn = document.createElement('button');
   jumpBtn.textContent = 'Go';
   jumpBtn.style.cssText = buttonStyle;
-  jumpBtn.style.margin = '0'; 
+  jumpBtn.style.margin = '0';  
 
   jumpBtn.addEventListener('click', () => {
     const targetPage = parseInt(pageInput.value);
@@ -536,9 +683,9 @@ function loadChapter(index){
       
       const styledContent = paragraphs.map(p => {
         return `<p style="
-          line-height: 1.8;
+         line-height: 1.8;
           font-size: 16px;
-          color: #333;
+          color: var(--text-color); /* 替换为 CSS 变量 */
           margin-bottom: 1.5em;
           text-align: justify;
           font-family: 'Microsoft YaHei', sans-serif;
@@ -546,6 +693,9 @@ function loadChapter(index){
       }).join('');
       
       contentDiv.innerHTML = styledContent + renderNavButtons();
+      
+      // 加载文章成功后，显示评论区
+      document.getElementById('vcomments').style.display = 'block';
       
       // 加入 Valine
       loadValine(chapters[index].file);
@@ -556,7 +706,7 @@ function loadChapter(index){
       // 标记为已读并刷新列表
       markChapterAsRead(index);
       renderChapterList();
-      
+
       // ===================================
       // 💥 GA4 细致统计代码 💥
       // 检查 gtag 函数是否可用 (即 GA 代码是否已加载)
@@ -571,6 +721,7 @@ function loadChapter(index){
       }
       // ===================================
 
+
     })
     .catch(err => {
         if (err !== '用户取消阅读限制级内容') {
@@ -582,48 +733,73 @@ function loadChapter(index){
   
 // 渲染底部导航栏
 function renderNavButtons(){
-  const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
-  const nextIndex = currentChapterIndex < chapters.length - 1 ? currentChapterIndex + 1 : null;
+  const prevIndex = currentChapterIndex > 0 ? currentChapterIndex - 1 : null;
+  const nextIndex = currentChapterIndex < chapters.length - 1 ? currentChapterIndex + 1 : null;
 
-  const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
-  const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
-  const currentTitle = chapters[currentChapterIndex].title || "";
-  const titleMaxWidth = '80px'; 
+  const prevTitle = prevIndex !== null ? chapters[prevIndex].title : "";
+  const nextTitle = nextIndex !== null ? chapters[nextIndex].title : "";
+  const currentTitle = chapters[currentChapterIndex].title || "";
+  const titleMaxWidth = '80px'; 
 
-  return `
-    <div style="text-align:center;font-size:12px;color:#999;margin:10px 0 10px 0;white-space:nowrap;overflow:hidden;
-    text-overflow:ellipsis;max-width:200px;margin-left:auto;margin-right:auto;">
-      当前文章：${currentTitle}
-    </div>
+  return `
+    <div style="text-align:center;font-size:12px;color:#999;margin:10px 0 10px 0;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;max-width:200px;margin-left:auto;margin-right:auto;">
+      当前文章：${currentTitle}
+    </div>
 
-    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#666;">
+    <div style="padding:15px 10px;border-top:1px solid #e6e6e6;display:flex;justify-content: center;
+    align-items:flex-end;font-size:14px;color:#666;">
 
       <div style="width:33%; display:flex;flex-direction:column;align-items:flex-start;box-sizing: border-box; ">
         ${prevIndex !== null ? `
           <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
           max-width:${titleMaxWidth}; 
           ">${prevTitle}</div>
-          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; 
-          background:#fff;" onclick="loadChapter(${prevIndex})">上一篇</button>
+          <button style="padding:8px 12px; 
+          font-size:14px; 
+          cursor:pointer; 
+          border-radius:6px; 
+          /* 💥 替换硬编码颜色 */
+          border:1px solid var(--nav-btn-border); 
+          background:var(--nav-btn-bg);
+          color:var(--nav-btn-text);
+          " onclick="loadChapter(${prevIndex})">上一篇</button>
         ` : `<div style="height:32px;"></div>`}
       </div>
 
       <div style="width:34%; display:flex;flex-direction:column;align-items:center;box-sizing: border-box; ">
-        <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #bbb; background:#fff;
-        " onclick="contentDiv.innerHTML='请选择标题开始阅读';window.scrollTo({top:0, behavior:'smooth'});">返回目录</button>
+        <button style="padding:8px 12px; 
+        font-size:14px; 
+        cursor:pointer; 
+        border-radius:6px; 
+         /* 💥 替换硬编码颜色 */
+        border:1px solid var(--nav-btn-border); 
+        background:var(--nav-btn-bg);
+        color:var(--nav-btn-text);
+        " onclick="contentDiv.innerHTML='请选择标题开始阅读';
+        // 💥 新增：点击返回目录时，隐藏评论区
+        document.getElementById('vcomments').style.display='none';
+        window.scrollTo({top:0, behavior:'smooth'});
+         ">返回目录</button>
       </div>
 
       <div style="width:33%; display:flex;flex-direction:column;align-items:flex-end;box-sizing: border-box; ">
         ${nextIndex !== null ? `
           <div style="font-size:12px;color:#999;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
           max-width:${titleMaxWidth}; text-align:right;">${nextTitle}</div>
-          <button style="padding:8px 12px; font-size:14px; cursor:pointer; border-radius:6px; border:1px solid #ccc; background:#fff;" 
-          onclick="loadChapter(${nextIndex})">下一篇</button>
+          <button style="padding:8px 12px; 
+          font-size:14px; 
+          cursor:pointer; 
+          border-radius:6px; 
+         /* 💥 替换硬编码颜色 */
+          border:1px solid var(--nav-btn-border); 
+          background:var(--nav-btn-bg);
+          color:var(--nav-btn-text);
+          " onclick="loadChapter(${nextIndex})">下一篇</button>
         ` : `<div style="height:32px;"></div>`}
       </div>
-
-    </div>
-  `;
+    </div>
+  `;
 }
 
 // --- 搜索框事件监听器 ---
@@ -637,37 +813,67 @@ if (chapterSearchInput) {
 // -----------------------
 
 
+// 核心函数：切换模式并保存状态
+function toggleMode() {
+    const body = document.body;
+    // 切换 body 上的 dark-mode class
+    body.classList.toggle('dark-mode');
+    
+    // 保存用户的选择到 localStorage
+    const isDarkMode = body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+
+    // 更新按钮文字和样式
+    const modeToggleBtn = document.getElementById('modeToggle');
+    if (isDarkMode) {
+        modeToggleBtn.textContent = '☀️ 白天模式';
+        // 按钮背景和文字颜色反转，使用硬编码颜色以保持按钮独立性
+        modeToggleBtn.style.background = '#444';
+        modeToggleBtn.style.color = '#fff';
+        modeToggleBtn.style.borderColor = '#666';
+    } else {
+        modeToggleBtn.textContent = '🌙 夜间模式';
+        modeToggleBtn.style.background = '#fff';
+        modeToggleBtn.style.color = '#333';
+        modeToggleBtn.style.borderColor = '#ccc';
+    }
+    // 每次切换模式后，重新渲染章节列表，确保标题颜色正确应用 CSS 变量
+    renderChapterList();
+}
+
+// 页面加载时：检查用户上次的选择并绑定点击事件
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const modeToggleBtn = document.getElementById('modeToggle');
+
+    // 检查并设置初始模式
+    if (savedTheme === 'dark') {
+        // 如果保存过夜间模式，则加载它
+        // 注意：这里不能直接调用 toggleMode()，因为 toggleMode() 默认会切换状态。
+        // 我们需要手动设置 dark-mode class 和按钮样式
+        document.body.classList.add('dark-mode');
+        modeToggleBtn.textContent = '☀️ 白天模式';
+        modeToggleBtn.style.background = '#444';
+        modeToggleBtn.style.color = '#fff';
+        modeToggleBtn.style.borderColor = '#666';
+    } else {
+         // 确保按钮显示默认的夜间模式提示
+         modeToggleBtn.textContent = '🌙 夜间模式';
+         modeToggleBtn.style.background = '#fff';
+         modeToggleBtn.style.color = '#333';
+         modeToggleBtn.style.borderColor = '#ccc';
+    }
+
+    // 绑定点击事件
+    modeToggleBtn.addEventListener('click', toggleMode);
+});
+
+
 // 初始化
 renderChapterList();
+
 </script>
 
-  <!-- Valine -->
-<script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
-<script>
-/**
- * loadValine(path)
- * path: 用于区分每篇文章的唯一字符串（建议使用文章 file 路径）
- * 每次加载新文章时调用一次，Valine 会基于 path 展示/存储该文章的评论
- */
-function loadValine(path) {
-  const container = document.getElementById('vcomments');
-   container.style.display = 'block';  //显示评论区
-  container.innerHTML = '';  // 清空原有评论区（防止重复）
-
-new Valine({
-  el: '#vcomments',
-  appId: 'Vjyvl4rx7rcjX77IHHJskLYi-gzGzoHsz',  // 替换成你的 AppId
-  appKey: 'HHoRxeRtDd7bJUTrkPo6RlgS',           // 替换成你的 AppKey
-  path: path,                        // 用作唯一标识
-  placeholder: '请输入昵称，欢迎留言评论！爱您！',
-  visitor: true,        // 显示访客数
-  avatar: 'hide',       // 隐藏头像
-  meta: ['nick'],       // 只保留昵称
-  pageSize: 10,
-  highlight: true,
-});
-}
-</script>
-
+  
 </body>
 </html>
