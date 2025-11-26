@@ -222,7 +222,7 @@
         【test】短篇文
     </h1>
     <p style="font-size: 14px; color: #fff; margin-bottom: 15px; text-align: center; ">
-         日期倒序
+         暂时没有优化点了
     </p>
     
    <div style="
@@ -394,29 +394,6 @@ const chapterList = document.getElementById('chapterList');
 const paginationDiv = document.getElementById('pagination');
 const contentDiv = document.getElementById('content');
 let currentChapterIndex = 0;
-
-
-// --- 排序辅助函数：从 desc 中提取日期 YYMMDD ---
-function extractDate(desc) {
-    // 使用正则表达式匹配 [YYMMDD] 格式并提取日期数字
-    const match = desc.match(/\[(\d{6})\]/);
-    if (match && match[1]) {
-        return parseInt(match[1]); // 返回整数，例如 251126
-    }
-    // 如果没有找到日期，返回 0，使其排在最末尾
-    return 0; 
-}
-
-// --- 核心排序代码：按日期降序 (最近的在前) ---
-chapters.sort((a, b) => {
-    const dateA = extractDate(a.desc);
-    const dateB = extractDate(b.desc);
-    
-    // 降序排序逻辑：
-    // 如果 dateB > dateA，返回正数，将 B 排在 A 的前面 (即 B 更靠前/更近)
-    return dateB - dateA;
-});
-
   
 // Valine加载，每次加载新文章时调用
 function loadValine(path) {
