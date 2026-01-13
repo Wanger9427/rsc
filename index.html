@@ -1,61 +1,275 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>个人资源分享</title>
+  <title>Wanger个人存文站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: "Arial", sans-serif;
-      background-color: #f7f7f7;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    h1 {
-      text-align: center;
+      font-family: "Microsoft YaHei", sans-serif;
+      background-color: #fdfdfd;
       color: #333;
-    }
-    h2 {
-      color: #444;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 0.2rem;
-    }
-    ul {
-      list-style-type: none;
+      margin: 0;
       padding: 0;
     }
-    li {
-      background-color: #fff;
-      margin: 0.5rem 0;
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+    header {
+      text-align: center;
+      padding: 40px 20px 20px 20px;
+      background-color: #1a73e8;
+      color: #fff;
     }
-    a {
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .section-card {
+      background-color: #f5f5f5;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .section-card a {
       text-decoration: none;
-      color: #0077cc;
+      color: #1a73e8;
+      font-weight: bold;
+      font-size: 18px;
+      display: block;
+      margin-top: 20px;
     }
-    a:hover {
-      text-decoration: underline;
+
+    .section-card p {
+      color: #555;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 500px) {
+      main {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>📁 Wanger个人制作合集</h1>
 
-  <h2>🧾 日剧</h2>
-  <ul>
-    <li><a href="暂无">我们无法简单恋爱</a></li>
-  </ul>
+<header>
+  <h1>Wanger个人存文站</h1>
+  <p>点击下方分区进入对应系列</p>
+</header>
 
-  <h2>🎵 节目</h2>
-  <ul>
-    <li><a href="链接">尊哉的房间第20回</a></li>
-  </ul>
+<main style="
+    display: flex; /* 启用弹性布局 */
+    flex-wrap: wrap; /* 允许卡片换行 */
+    gap: 20px; /* 卡片之间的间距 */
+    padding: 20px;
+    max-width: 1200px; /* 限制整个内容区域的最大宽度 */
+    margin: 0 auto; /* 使整个内容区域在PC端居中 */
+">
+    <style>
+        .section-card {
+            /* 基础样式 */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            
+            /* 宽度控制：在 PC 端，卡片宽度适应父容器，同时限制最小最大宽度 */
+            flex-grow: 1; /* 允许卡片伸展 */
+            flex-basis: 280px; /* 理想基础宽度，当宽度足够时每行显示多个 */
+            max-width: 350px; /* 限制单张卡片最大宽度，防止文字被过度拉伸 */
+            
+            /* 高度控制：通过 padding 控制高度，同时满足移动端降低高度的要求 */
+            padding: 15px; /* 移动端/小屏幕时的内边距，比默认值小 */
+            
+            /* 内部内容样式 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* 标题和文字样式 */
+        .section-card h2 {
+            font-size: 18px;
+            margin-top: 0;
+            color: #333;
+        }
+        .section-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            /* 保证内容不会因文字太长而溢出 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* 链接按钮样式 */
+        .section-card a {
+            display: inline-block;
+            background-color: #007bff; /* 蓝色按钮 */
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: auto; /* 将按钮推到底部 */
+        }
+        
+        /* 鼠标悬停效果 */
+        .section-card:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
 
-  <h2>📦 实用工具</h2>
-  <ul>
-    <li><a href="https://www.baidu.com/">百度</a></li>
-  </ul>
+        .section-card.no-link p {
+             margin-bottom: 0; /* 如果是最后一个没有链接的卡片，底部间距可以移除 */
+        }
+    </style>
+
+    <div class="section-card">
+        <h2>【袁成】重逢</h2>
+        <p>成才没有加入老A的故事线<br>全18章正文+3篇番外</p>
+        <a href="reunion.html">进入分区</a>
+    </div>
+
+    <div class="section-card">
+        <h2>【袁成】短篇文</h2>
+        <p>短篇都是相互独立的<br>时间线和各自设定都很混乱</p>
+        <a href="shorts.html">进入分区</a>
+    </div>
+    
+    <div class="section-card">
+        <h2>【袁成】老A日常系列</h2>
+        <p>成才、许三多、吴哲、齐桓四人一个宿舍的背景<br>内容偏全员沙雕</p>
+        <a href="daily.html">进入分区</a>
+    </div>
+
+    <div class="section-card">
+        <h2>【袁成】老A版《走近科学》</h2>
+        <p>沙雕灵异的科学事件</p>
+        <a href="science.html">进入分区</a>
+    </div>
+
+    <div class="section-card">
+        <h2>非袁成等杂文</h2>
+        <p>包括其他CP和多CP等</p>
+        <a href="other.html">进入分区</a>
+    </div>
+    
+    <div class="section-card no-link">
+        <h2>与我交流</h2>
+        <p>QQ群：870206692<br>(加群请写备注)</p>
+        <a href="test.html">测试用页面</a>
+    </div>
+</main>
+
+</main>
+
+<div id="homepageModal" style="display:none;">
+    
+    <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.7); z-index:9998;"></div>
+    
+    <div id="modalContent" style="
+        position:fixed; 
+        top:50%; 
+        left:50%; 
+        transform:translate(-50%, -50%); 
+        padding:25px; 
+        width:80%; 
+        max-width:350px;
+        z-index:9999;
+        /* 使用首页的背景和文字色 */
+        background:#fff; 
+        color:#333; 
+        border-radius:10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        line-height:1.5;
+    ">
+        <h2 style="
+            margin-top:0; 
+            font-size:20px; 
+            /* 使用 header 的蓝色主题色 */
+            color:#1a73e8; 
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        ">
+            ✨欢迎光临！Wanger衷心欢迎您！
+        </h2>
+        <p style="margin-bottom:20px;">
+            首发会先去lofter，那边能发就发，发不出来或者被屏了也懒得管了<br>
+            总之会陆续上传到这里了以及QQ群里，如果能有你喜欢的文章就太好了<br>
+            也希望可以得到您的留言评论~<br><br>
+           【网页功能更新】
+            <br>(有优化建议真的可以向我提)
+            <br>1124新增<夜间模式>切换按钮
+            <br>1121新增<评论区>功能
+            <br>1120网站发布
+        </p>
+        
+        <button onclick="closeModal()" style="
+            display:block;
+            width:100%; 
+            padding: 10px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 16px;
+            /* 按钮使用主题色 */
+            background:#1a73e8;
+            color:white;
+            border:none;
+        ">我明白了</button>
+    </div>
+</div>
+
+<script>
+    // --- 弹窗控制函数 ---
+    function showModal() {
+        // 确保弹窗可见
+        document.getElementById('homepageModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        // 隐藏弹窗
+        document.getElementById('homepageModal').style.display = 'none';
+    }
+    
+    // --- 页面加载完成后立即显示弹窗 ---
+    // 使用 window.onload 确保所有元素加载完毕后才弹出
+    window.onload = function() {
+        showModal();
+        
+        // 💥 提示：如果您只想让弹窗第一次访问时弹出，请使用以下代码替代 showModal();
+        /*
+        if (!localStorage.getItem('homepageVisited')) {
+            showModal();
+            localStorage.setItem('homepageVisited', 'true');
+        }
+        */
+    };
+</script>
+
+</body>
+</html>
 </body>
 </html>
